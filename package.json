@@ -1,0 +1,13 @@
+{
+  "name": "nasiya-hisobi",
+  "version": "1.0.0",
+  "description": "Nasiya hisobi: Telegram mini app va bot",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "engines": { "node": ">=22.13" },
+  "license": "UNLICENSED",
+  "private": true
+}

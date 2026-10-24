@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nasiya hisobi</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#efefef;--card:#fff;--ink:#111;--mute:#8d8d93;--chip:#f0f0f2;--green:#12a05c;--red:#f85455;--amb:#ffb020;--line:#e6e6ea;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b0d;--card:#1a1a1f;--ink:#f5f5f7;--mute:#9b9ba5;--chip:#2a2a31;--line:#2c2c33;--green:#2fd283}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:520px;margin:0 auto;padding:12px 14px 120px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.circ{width:56px;height:56px;border-radius:50%;background:var(--card);border:0;color:var(--ink);display:grid;place-items:center;cursor:pointer;position:relative;flex:none}
+.circ .dot{position:absolute;top:13px;right:14px;width:10px;height:10px;border-radius:50%;background:var(--red)}
+.pill{flex:1;max-width:260px;height:56px;border-radius:28px;background:var(--card);display:flex;align-items:center;gap:10px;padding:0 14px 0 6px;color:var(--mute);font-weight:700;font-size:17px;min-width:0;white-space:nowrap;overflow:hidden}
+.ring{position:relative;width:46px;height:46px;flex:none}.ring svg{width:46px;height:46px}.ring b{position:absolute;inset:0;display:grid;place-items:center;color:#f59e0b;font-size:16px}
+.rolebadge{border-radius:999px;padding:10px 14px;font-weight:700;font-size:14px;background:var(--green);color:#fff;flex:none}.rolebadge.m{background:#0a6cff}
+.rail{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.photo{flex:0 0 100%;scroll-snap-align:center;height:320px;border-radius:36px;position:relative;overflow:hidden;background:linear-gradient(160deg,#d8dce2,#b9c0ca) center/cover no-repeat}
+.photo .cs{position:absolute;inset:0;display:grid;place-items:center;padding:40px 20px 70px}.photo .cs svg{width:100%}
+.brand{position:absolute;top:14px;left:14px;background:rgba(240,240,242,.92);color:#222;border-radius:18px;padding:14px 16px;font-weight:700}
+.pen{position:absolute;top:14px;right:14px;width:54px;height:54px;border-radius:50%;border:0;background:#fff;color:#111;display:grid;place-items:center;cursor:pointer}
+.plate{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;border:3px solid #111;border-radius:10px;background:#fff;color:#111;font-weight:700;font-size:26px;line-height:1;white-space:nowrap}
+.plate b{padding:8px 12px;border-right:3px solid #111}.plate span{padding:8px 10px;display:flex;align-items:center;gap:6px}
+.flag{width:16px;height:12px;background:linear-gradient(#1eb5e9 33%,#fff 33% 66%,#1db954 66%);border:1px solid #bbb}
+.dots{display:flex;justify-content:center;gap:12px;margin:14px 0 18px}.dots i{width:22px;height:22px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--mute)}
+.dots i{transform:scale(.45)}.dots i.on{transform:scale(.55)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:var(--card);border-radius:30px;padding:20px;min-height:230px;display:flex;flex-direction:column;justify-content:space-between;border:0;text-align:left;font:inherit;color:inherit;width:100%}
+.tile.full{grid-column:1/-1;min-height:0;gap:10px}
+.tile .lb{display:flex;align-items:center;gap:10px;color:var(--mute);font-weight:600;font-size:17px}
+.tile .lb svg{flex:none}
+.tile b{font-size:27px;line-height:1.1;display:block}.tile span.s{color:var(--mute);font-size:18px;display:block;margin-top:6px}
+.tile.red{background:var(--red);color:#fff}.tile.red .lb,.tile.red span.s{color:#fff}
+.tile.amb{background:var(--amb);color:#1a1200}.tile.amb .lb,.tile.amb span.s{color:#4a3500}
+.card{background:var(--card);border-radius:28px;padding:18px;margin-bottom:12px}
+h2{font-size:20px;margin:0 0 10px}h1{font-size:30px;margin:6px 4px 14px;text-align:center}
+.kv{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.kv:last-child{border:0}.kv>span{color:var(--mute)}
+.note{color:var(--mute);font-size:13px;margin:8px 0 0}
+form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+input{padding:13px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);font:inherit;width:100%;min-width:0}
+.btn{grid-column:1/-1;padding:14px;border:0;border-radius:16px;background:var(--green);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.btn:disabled{opacity:.6}
+.btn.no{background:var(--red)}
+.span2{grid-column:1/-1}
+.row2{display:flex;gap:8px;margin-top:10px}.row2 .btn{flex:1}
+.lr{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;border:0;background:none;color:inherit;font:inherit;text-align:left;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.seg{display:flex;background:var(--chip);border-radius:999px;padding:4px;margin-bottom:12px}.seg button{flex:1;border:0;background:none;color:var(--ink);padding:11px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}.seg button[aria-pressed="true"]{background:var(--card);box-shadow:0 1px 5px rgba(0,0,0,.1)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px));display:flex;z-index:9}
+.bar button{flex:1;border:0;background:none;color:var(--mute);font:inherit;font-size:12px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 0;position:relative}
+.bar button[aria-pressed="true"]{color:var(--green)}
+.bar .rd{position:absolute;top:0;left:56%;width:10px;height:10px;border-radius:50%;background:var(--red)}
+.road{display:flex;flex-wrap:wrap;gap:8px}.road i{width:34px;height:34px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;color:var(--mute)}.road i.p{background:var(--green);color:#fff}.road i.n{outline:3px solid var(--amb)}.road i.l{background:var(--red);color:#fff}
+.mini{display:flex;gap:10px}.mini>div{flex:1;background:var(--chip);border-radius:20px;padding:14px}.mini b{font-size:19px;display:block}.mini span{color:var(--mute);font-size:13px}
+.rc{background:var(--card);border-radius:28px;padding:20px;border:2px dashed var(--line);margin-bottom:12px}
+.sm{border:0;background:var(--chip);color:var(--ink);border-radius:12px;padding:8px 12px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.st{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}.st.w{background:#fff1d1;color:#8a5a00}.st.g{background:#dff4e8;color:#177a45}.st.r{background:#fde1de;color:#b3261e}
+.pic{display:block;width:100%;max-height:320px;object-fit:contain;border-radius:16px;background:var(--chip);margin:8px 0}
+.thumb{width:40px;height:40px;object-fit:cover;border-radius:10px;flex:none}
+.center{min-height:70vh;display:grid;place-content:center;text-align:center;gap:14px;padding:20px}
+.center h1{margin:0}.center p{color:var(--mute);margin:0}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#111;color:#fff;padding:12px 18px;border-radius:999px;z-index:20;font-weight:600;max-width:90%}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #0a6cff;outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<nav class="bar" id="bar" hidden></nav>
+<div class="toast" id="toast" role="status" hidden></div>
+<input type="file" accept="image/*" id="file" hidden>
+<script>
+var tg=window.Telegram&&window.Telegram.WebApp;
+if(tg){try{tg.ready();tg.expand()}catch(e){}}
+var INIT=(tg&&tg.initData)||"";
+var DEVID=new URLSearchParams(location.search).get("dev")||"";
+var MON=["yanvar","fevral","mart","aprel","may","iyun","iyul","avgust","sentabr","oktabr","noyabr","dekabr"];
+var IC={menu:"M4 7h12M4 12h16M4 17h12",bell:"M6 17V11a6 6 0 1 1 12 0v6l2 2H4zM10 21h4",pen:"M4 20l4-1 11-11-3-3L5 16zM14 7l3 3",debt:"M12 3v18M8 7h6a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h7",cal:"M4 6h16v14H4zM4 10h16M8 3v4M16 3v4",ok:"M4 12l5 5L20 6",clock:"M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 8v4l3 2",home:"M4 11l8-7 8 7v9h-5v-6H9v6H4z",wal:"M3 7h16a2 2 0 0 1 2 2v9H5a2 2 0 0 1-2-2zM3 7l12-3v3M16 13h2",gear:"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1",chart:"M4 20V10M10 20V4M16 20v-7"};
+function ico(k,s,c){return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="'+(c||"currentColor")+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+IC[k]+'"/></svg>'}
+
+// ---------- server bilan aloqa ----------
+function api(method,url,body){var h={"content-type":"application/json"};if(INIT)h["x-init-data"]=INIT;else if(DEVID)h["x-dev-user"]=DEVID;
+ return fetch(url,{method:method,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){
+  return r.json().catch(function(){return{}}).then(function(j){if(!r.ok){var e=new Error(j.error||"Xatolik yuz berdi");e.status=r.status;throw e}return j})})}
+function authQ(){return INIT?"a="+encodeURIComponent(INIT):(DEVID?"dev="+encodeURIComponent(DEVID):"")}
+var carVer={};
+function photoUrl(kind,id){return "/api/photo/"+kind+"/"+id+"?"+authQ()+(kind==="car"?"&v="+(carVer[id]||0):"")}
+
+// ---------- holat ----------
+var ME=null,C=[],page="home",sel=0,rcp=null,sig="";
+function mode(){return ME&&ME.role==="seller"?"s":"m"}
+function list(){return C}
+function lbl(iso){var p=iso.split("-");return parseInt(p[2],10)+"."+p[1]+"."+p[0].slice(2)}
+function mapC(c){return{id:c.id,n:c.name,phone:c.phone,plate:c.plate,car:c.car,day:c.day,start:c.start,init:c.init,total:c.total,months:c.months,
+ photo:c.hasPhoto?photoUrl("car",c.id):"",pays:c.pays.map(function(p){return[lbl(p.date),p.amount,p.status,p.hasPhoto?photoUrl("pay",p.id):null,p.id,p.kind]})}}
+function load(silent){return api("GET","/api/customers").then(function(r){var s=JSON.stringify(r.customers);
+ if(silent&&s===sig)return;sig=s;C=r.customers.map(mapC);if(sel>=C.length)sel=0;
+ if(silent){var ae=document.activeElement;if(ae&&(ae.tagName==="INPUT"))return}render(silent)})}
+
+// ---------- yordamchilar ----------
+function $(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+function toast(t){var e=document.getElementById("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){e.hidden=true},3000)}
+function fail(e){if(e&&e.status===401){toast("Ilovani Telegram ichidan oching");return}toast(e&&e.message?e.message:"Xatolik yuz berdi")}
+function busy(btn,p){btn.disabled=true;return p.then(function(r){btn.disabled=false;return r},function(e){btn.disabled=false;fail(e);throw e})}
+function money(n){return Math.round(n).toLocaleString("en-US").replace(/,/g," ")+" $"}
+function today(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())}
+function iso(d){return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function dim(y,m){return new Date(y,m+1,0).getDate()}
+function mk(y,m,day){y+=Math.floor(m/12);m=((m%12)+12)%12;return new Date(y,m,Math.min(day,dim(y,m)))}
+function due(c,k){var p=c.start.split("-");return mk(+p[0],+p[1]-1+k-1,c.day)}
+function dl(d){return d.getDate()+"-"+MON[d.getMonth()]}
+function okp(p){return p[2]==="ok"}
+function info(c){var paid=0,pend=0;c.pays.forEach(function(p){if(okp(p))paid+=p[1];else if(p[2]==="wait")pend++});
+ var mo=c.total/c.months,pn=Math.floor(paid/mo+1e-4),left=Math.max(c.total-paid,0),t=today(),dcS=0,dcI=0;
+ for(var q=1;q<=c.months;q++){var d=due(c,q);if(d<t)dcS++;if(d<=t)dcI++}
+ var nd=due(c,Math.min(pn+1,c.months)),days=Math.round((nd-t)/864e5),late=left>0&&dcS>pn;
+ var nx=Math.min(left,Math.max(mo*(pn+1)-paid,0));if(left>0&&nx<1)nx=Math.min(mo,left);
+ return{paid:paid,left:left,mo:mo,nd:nd,days:days,late:late,pm:paid/mo,ml:Math.max(c.months-paid/mo,0),pn:pn,next:nx,
+  owed:Math.min(left,Math.max(mo*dcS-paid,0)),lateM:Math.max(dcS-pn,0),ahead:Math.max(pn-dcI,0),pend:pend}}
+function st(i){return i.left<=0?"ok":(i.late||i.days<=5)?"red":i.days<=10?"amb":"ok"}
+function readImg(f,max,q,cb){var im=new Image(),u=URL.createObjectURL(f);im.onload=function(){var s=Math.min(1,max/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);
+ cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);cb(cv.toDataURL("image/jpeg",q))};im.onerror=function(){toast("Rasmni o’qib bo’lmadi")};im.src=u}
+function plate(p){var m=p.match(/^(\d{2})(.*)$/),r=(m?m[2]:p).replace(/(\d+)/," $1 ").replace(/\s+/g," ").trim(),w=$("div","plate");
+ w.appendChild($("b","",m?m[1]:""));var s=$("span","",r);s.appendChild($("i","flag"));w.appendChild(s);return w}
+var CAR='<svg viewBox="0 0 300 110" aria-hidden="true"><path d="M14 96C22 74 62 66 96 56C124 30 192 28 218 52C248 58 278 68 288 96Z" fill="#eceef1"/><path d="M60 92C80 70 110 64 140 70M160 52C180 60 214 66 250 90M100 60C120 74 150 76 176 62" fill="none" stroke="#d3d7dd" stroke-width="3" stroke-linecap="round"/></svg>';
+function remCount(){return list().filter(function(c){var i=info(c);return i.left>0&&(i.late||i.days<=10)}).length}
+function pendCount(){return list().reduce(function(n,c){return n+info(c).pend},0)}
+
+// ---------- pastki menyu ----------
+function nav(){var b=document.getElementById("bar");b.hidden=false;b.innerHTML="";
+ [["home","Bosh sahifa","home"],["pay","To’lovlar","wal"],["rem","Eslatma","bell"]].concat(mode()==="s"?[["rep","Hisobot","chart"]]:[]).concat([["set",mode()==="s"?"Sozlamalar":"Men","gear"]]).forEach(function(x){
+  var k=$("button");k.setAttribute("aria-pressed",page===x[0]);k.innerHTML=ico(x[2],26)+"<span>"+x[1]+"</span>";
+  if((x[0]==="rem"&&remCount())||(x[0]==="pay"&&mode()==="s"&&pendCount()))k.appendChild($("i","rd"));k.onclick=function(){page=x[0];rcp=null;render()};b.appendChild(k)})}
+
+// ---------- bosh sahifa ----------
+function topbar(a,c,i){var t=$("div","top");
+ var p=$("div","pill"),pr=Math.min(i.paid/c.total,1),L=2*Math.PI*19,rg=$("div","ring");
+ rg.innerHTML='<svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="19" fill="none" stroke="var(--line)" stroke-width="3"/><circle cx="23" cy="23" r="19" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" stroke-dasharray="'+L*pr+' '+L+'" transform="rotate(-90 23 23)"/></svg>';
+ rg.appendChild($("b","",i.pm.toFixed(1)));p.appendChild(rg);p.appendChild($("span","","oy to’langan"));
+ var b=$("button","circ");b.setAttribute("aria-label","Eslatmalar");b.innerHTML=ico("bell",26);if(remCount())b.appendChild($("i","dot"));b.onclick=function(){page="rem";render()};
+ var rb=$("div","rolebadge"+(mode()==="m"?" m":""),mode()==="s"?"Sotuvchi":"Mijoz");
+ t.appendChild(p);t.appendChild(rb);t.appendChild(b);a.appendChild(t)}
+function tile(cls,ic,lb,big,sub){var t=$("div","tile "+cls),l=$("div","lb");l.innerHTML=ico(ic,26);l.appendChild($("span","",lb));t.appendChild(l);
+ var d=$("div");d.appendChild($("b","",big));d.appendChild($("span","s",sub));t.appendChild(d);return t}
+function home(a){var c=list()[sel],i=info(c);topbar(a,c,i);
+ var rail=$("div","rail");
+ list().forEach(function(x,ix){var p=$("div","photo");if(x.photo){p.style.backgroundImage="url("+x.photo+")"}else{var cs=$("div","cs");cs.innerHTML=CAR;p.appendChild(cs)}
+  p.appendChild($("div","brand",x.car||"Mashina"));
+  if(mode()==="s"){var pn=$("button","pen");pn.setAttribute("aria-label","Mashina rasmini o’zgartirish");pn.innerHTML=ico("pen",24);pn.onclick=function(){document.getElementById("file").dataset.i=ix;document.getElementById("file").click()};p.appendChild(pn)}
+  p.appendChild(plate(x.plate));rail.appendChild(p)});
+ a.appendChild(rail);var dt=$("div","dots");list().forEach(function(x,k){dt.appendChild($("i",k===sel?"on":""))});a.appendChild(dt);
+ var tm;rail.onscroll=function(){clearTimeout(tm);tm=setTimeout(function(){var k=Math.round(rail.scrollLeft/rail.clientWidth);if(k!==sel&&k<list().length){sel=k;render(true)}},120)};
+ rail.scrollLeft=sel*rail.clientWidth;
+ var g=$("div","grid");
+ if(i.pend>0)g.appendChild(tile("amb full","clock","To’lov tekshiruvda",i.pend+" ta",mode()==="s"?"Tasdiqlash uchun To’lovlar bo’limiga o’ting":"Sotuvchi tasdiqlashini kuting"));
+ g.appendChild(tile("","debt","Qolgan qarz",money(i.left),money(c.total)+" dan"));
+ var s=st(i),tl;
+ if(i.left<=0)tl=tile("","ok","To’lov kuni","Tabriklaymiz!","Mashina to’liq sizniki");
+ else if(i.late)tl=tile("red","cal","To’lov kuni","Kechikdi "+(-i.days)+" kun","Qarz: "+money(i.owed)+" ("+i.lateM+" oy)");
+ else if(s==="ok")tl=tile("","cal","To’lov kuni","Yana "+i.days+" kun",dl(i.nd)+", "+money(i.next));
+ else tl=tile(s,"cal","To’lov kuni",i.days===0?"Bugun":i.days+" kun qoldi",dl(i.nd)+", "+money(i.next));
+ g.appendChild(tl);
+ g.appendChild(tile("","ok","To’langan",money(i.paid),Math.round(i.paid/c.total*100)+"% to’langan"));
+ var last=due(c,Math.min(i.pn+Math.max(Math.ceil(i.ml),1),c.months));
+ g.appendChild(tile("","clock","Muddat",i.left<=0?"Tugagan":"Yana "+Math.ceil(i.ml)+" oy",i.left<=0?"":MON[last.getMonth()]+" "+last.getFullYear()+" gacha"));
+ g.appendChild(tile("","debt","Oylik to’lov",money(i.mo),"taxminan, "+c.months+" oy"));
+ g.appendChild(tile("","ok","Boshlang’ich",money(c.init),"alohida to’langan"));
+ a.appendChild(g)}
+
+// ---------- to'lovlar ----------
+function statusChip(p){var s=$("span","st"),v=p[2];if(v==="wait"){s.className+=" w";s.textContent="Tekshiruvda"}else if(v==="no"){s.className+=" r";s.textContent="Rad etildi"}else{s.className+=" g";s.textContent="Tasdiqlangan"}return s}
+function picker(a){var s=$("div","seg");list().forEach(function(c,k){var b=$("button","",(c.car||"Mashina").split(" ").pop()+" "+c.plate.slice(-4));b.setAttribute("aria-pressed",k===sel);b.onclick=function(){sel=k;render()};s.appendChild(b)});a.appendChild(s)}
+function pay(a){var c=list()[sel],i=info(c);a.appendChild($("h1","","To’lovlar"));if(list().length>1)picker(a);
+ if(rcp!==null&&c.pays[rcp]&&okp(c.pays[rcp])&&c.pays[rcp][5]!=="opening")rcard(a,c);
+ if(mode()==="s"){var w=c.pays.map(function(p,ix){return[p,ix]}).filter(function(y){return y[0][2]==="wait"});
+  var pk=$("div","card");pk.appendChild($("h2","","Tasdiqlash kutilmoqda"));
+  if(!w.length)pk.appendChild($("p","note","Yangi to’lov yo’q. Mijoz to’lov kiritganda shu yerda chek rasmi bilan chiqadi."));
+  w.forEach(function(y){var p=y[0],r=$("div","kv");r.appendChild($("span","",p[0]+" · "+c.n));r.appendChild($("b","",money(p[1])));pk.appendChild(r);
+   if(p[3]){var im=$("img","pic");im.src=p[3];im.alt="Chek rasmi";pk.appendChild(im)}
+   var rw=$("div","row2"),ya=$("button","btn","Tasdiqlash"),no=$("button","btn no","Rad etish");
+   ya.onclick=function(){busy(ya,api("POST","/api/payments/"+p[4]+"/confirm")).then(function(){toast("To’lov tasdiqlandi");return load()}).catch(function(){load(true)})};
+   no.onclick=function(){busy(no,api("POST","/api/payments/"+p[4]+"/reject")).then(function(){toast("To’lov rad etildi");return load()}).catch(function(){load(true)})};
+   rw.appendChild(ya);rw.appendChild(no);pk.appendChild(rw)});
+  a.appendChild(pk)}
+ else{var f0=$("div","card");f0.appendChild($("h2","","To’lov kiritish"));var f=$("form"),d=$("input"),m=$("input"),ph=$("input");
+  d.type="date";d.required=true;d.value=iso(today());d.max=iso(today());d.setAttribute("aria-label","Sana");
+  m.type="number";m.min=1;m.step="any";m.placeholder="Summa, $";m.required=true;m.setAttribute("aria-label","Summa, dollarda");
+  ph.type="file";ph.accept="image/*";ph.required=true;ph.className="span2";ph.setAttribute("aria-label","To’lov chekining rasmi");
+  var nt=$("p","note","Dollar to’langanini ko’rsatadigan chek yoki pul rasmini yuklang. Sotuvchi tasdiqlagach to’lov hisobga olinadi.");nt.className+=" span2";
+  var b=$("button","btn","Tasdiqlashga yuborish");b.type="submit";f.appendChild(d);f.appendChild(m);f.appendChild(ph);f.appendChild(nt);f.appendChild(b);
+  f.onsubmit=function(ev){ev.preventDefault();var file=ph.files[0];if(!file||!(+m.value>0)){toast("Summa va rasm kerak");return}
+   b.disabled=true;readImg(file,900,.6,function(url){busy(b,api("POST","/api/payments",{customerId:c.id,amount:+m.value,date:d.value,photo:url})).then(function(){toast("Yuborildi. Sotuvchi tasdiqlashini kuting");return load()}).catch(function(){})})};
+  f0.appendChild(f);a.appendChild(f0)}
+ var k=$("div","card"),rows=[["Mijoz",c.n],["Mashina",(c.car||"")+", "+c.plate],["Telefon",c.phone||"kiritilmagan"],["Boshlang’ich to’lov",money(c.init)],["Nasiya summasi",money(c.total)],["Muddat",c.months+" oy"],["Oylik to’lov (taxminan)",money(i.mo)],["To’langan",money(i.paid)],["Qolgan qarz",money(i.left)]];
+ if(i.late)rows.push(["Kechikkan",i.lateM+" oy, "+money(i.owed)]);if(i.ahead>0&&i.left>0)rows.push(["Oldindan to’langan",i.ahead+" oy"]);
+ rows.forEach(function(x){var r=$("div","kv");r.appendChild($("span","",x[0]));r.appendChild($("b","",x[1]));k.appendChild(r)});
+ k.appendChild($("p","note","Boshlang’ich to’lov oylik jadvalga qo’shilmaydi. Faqat tasdiqlangan to’lovlar hisoblanadi."));a.appendChild(k);
+ var rd=$("div","card"),ro=$("div","road");rd.appendChild($("h2","","Oylar yo’li"));
+ for(var q2=1;q2<=c.months;q2++){var cl=q2<=i.pn?"p":(i.late&&q2<=i.pn+i.lateM)?"l":(q2===i.pn+1&&i.left>0)?"n":"";ro.appendChild($("i",cl,String(q2)))}
+ rd.appendChild(ro);rd.appendChild($("p","note","Yashil: to’langan. Qizil: kechikkan. Sariq halqa: keyingi to’lov."));a.appendChild(rd);
+ var h=$("div","card");h.appendChild($("h2","","Tarix"));if(!c.pays.length)h.appendChild($("p","note","Hali to’lov yo’q."));
+ c.pays.map(function(x,ix){return[x,ix]}).reverse().forEach(function(y){var x=y[0],r=$("div","kv"),l=$("div");l.style.cssText="display:flex;align-items:center;gap:8px;flex-wrap:wrap";
+  if(x[3]){var im=$("img","thumb");im.src=x[3];im.alt="Chek";im.loading="lazy";l.appendChild(im)}
+  l.appendChild($("span","",x[5]==="opening"?"Oldingi to’lovlar":x[0]));l.appendChild(statusChip(x));r.appendChild(l);
+  var rt=$("div");rt.style.cssText="display:flex;align-items:center;gap:8px";
+  if(okp(x)&&x[5]!=="opening"){var b=$("button","sm","Kvitansiya");b.onclick=function(){rcp=y[1];render()};rt.appendChild(b)}
+  rt.appendChild($("b","",money(x[1])));r.appendChild(rt);h.appendChild(r)});a.appendChild(h)}
+function rcard(a,c){var x=c.pays[rcp],paid=0;for(var k=0;k<=rcp;k++)if(okp(c.pays[k]))paid+=c.pays[k][1];
+ var txt=["KVITANSIYA",c.n,(c.car||"")+", "+c.plate,"Sana: "+x[0],"To’langan summa: "+money(x[1]),"Jami to’langan: "+money(paid),"Qolgan qarz: "+money(Math.max(c.total-paid,0))].join("\n");
+ var w=$("div","rc");w.appendChild($("h2","","Kvitansiya"));var p=$("div","",txt);p.style.whiteSpace="pre-line";w.appendChild(p);
+ var r=$("div","mini");r.style.marginTop="12px";var b1=$("button","sm","Nusxalash"),b2=$("button","sm","Yopish");
+ b1.onclick=function(){try{navigator.clipboard.writeText(txt).then(function(){toast("Nusxalandi, Telegramga yuboring")},function(){toast("Nusxalab bo’lmadi")})}catch(e){toast("Nusxalab bo’lmadi")}};
+ b2.onclick=function(){rcp=null;render()};r.appendChild(b1);r.appendChild(b2);w.appendChild(r);a.appendChild(w)}
+
+// ---------- hisobot ----------
+function callBtn(c){if(c.phone){var l=$("a","sm","Qo’ng’iroq");l.href="tel:"+c.phone.replace(/[^\d+]/g,"");return l}return $("span","note","Raqam yo’q")}
+function rep(a){a.appendChild($("h1","","Hisobot"));var tot=0,paid=0,mon=0,soon=[],lates=[],pends=[];
+ C.forEach(function(c){var i=info(c);tot+=i.left;paid+=i.paid;if(i.left>0){mon+=Math.min(i.mo,i.left);if(i.late)lates.push([c,i]);else if(i.days<=10)soon.push([c,i])}if(i.pend)pends.push([c,i])});
+ var k=$("div","card"),m=$("div","mini");
+ [["Jami qarz",money(tot)],["To’langan",money(paid)],["Oylik tushum",money(mon)]].forEach(function(x){var d=$("div");d.appendChild($("b","",x[1]));d.appendChild($("span","",x[0]));m.appendChild(d)});
+ k.appendChild(m);k.appendChild($("p","note",C.length+" ta mijoz bo’yicha. Oylik tushum: har bir mijozning oylik to’lovi yig’indisi."));a.appendChild(k);
+ var lc=$("div","card");lc.appendChild($("h2","","Kechikkan mijozlar ("+lates.length+")"));if(!lates.length)lc.appendChild($("p","note","Kechikkan mijoz yo’q."));
+ lates.sort(function(p,q){return p[1].days-q[1].days}).forEach(function(y){var r=$("div","kv"),l=$("div");l.appendChild($("b","",y[0].n));l.appendChild($("div","note",(-y[1].days)+" kun kechikdi · "+y[1].lateM+" oy · "+money(y[1].owed)));r.appendChild(l);r.appendChild(callBtn(y[0]));lc.appendChild(r)});a.appendChild(lc);
+ var pc=$("div","card");pc.appendChild($("h2","","Tasdiqlash kutilmoqda ("+pends.reduce(function(n,y){return n+y[1].pend},0)+")"));if(!pends.length)pc.appendChild($("p","note","Hozircha yo’q."));
+ pends.forEach(function(y){var r=$("button","lr"),l=$("div");l.appendChild($("b","",y[0].n));l.appendChild($("div","note",y[1].pend+" ta to’lov chek bilan"));r.appendChild(l);r.appendChild($("span","sm","Ko’rish"));r.onclick=function(){sel=C.indexOf(y[0]);page="pay";render()};pc.appendChild(r)});a.appendChild(pc);
+ var s=$("div","card");s.appendChild($("h2","","10 kun ichida to’lov kutilmoqda"));if(!soon.length)s.appendChild($("p","note","Hozircha yo’q."));
+ soon.sort(function(p,q){return p[1].days-q[1].days}).forEach(function(y){var r=$("div","kv"),l=$("div");l.appendChild($("b","",y[0].n));l.appendChild($("div","note",dl(y[1].nd)+" · "+(y[1].days===0?"bugun":y[1].days+" kun qoldi")+" · "+money(y[1].next)));r.appendChild(l);r.appendChild(callBtn(y[0]));s.appendChild(r)});a.appendChild(s)}
+
+// ---------- eslatma ----------
+function rem(a){var c=list()[sel],i=info(c);a.appendChild($("h1","","Eslatmalar"));if(list().length>1)picker(a);
+ var k=$("div","card");k.appendChild($("h2","",c.n+": "+dl(i.nd)+" to’lovi"));
+ if(i.left<=0)k.appendChild($("p","note","Qarz yopilgan, eslatma kerak emas."));
+ if(i.late){var lr=$("div","kv");lr.appendChild($("b","","Kechikdi: "+(-i.days)+" kun"));lr.appendChild($("span","",money(i.owed)));k.appendChild(lr)}
+ [10,5].forEach(function(o){var dt=new Date(i.nd.getFullYear(),i.nd.getMonth(),i.nd.getDate()-o),df=Math.round((dt-today())/864e5),
+  s=i.left<=0?"kerak emas":df<0?"yuborilgan":df===0?"bugun yuboriladi":"kutilmoqda";
+  var h=$("div","kv");h.appendChild($("b","",o+" kun oldin · "+dl(dt)));h.appendChild($("span","",s));k.appendChild(h)});
+ k.appendChild($("p","note","Eslatma Telegram orqali ham mijozga, ham sotuvchiga boradi: to’lovga 10 va 5 kun qolganda, to’lov kuni va kechikkanda."));a.appendChild(k)}
+
+// ---------- sozlamalar ----------
+function field(f,label,inp){var w=$("div");w.appendChild($("div","note",label));w.appendChild(inp);f.appendChild(w)}
+function set(a){a.appendChild($("h1","",mode()==="s"?"Sozlamalar":"Men"));
+ if(mode()!=="s"){var me=C[sel]||{},k0=$("div","card");[["Ism",me.n],["Telefon",me.phone||"kiritilmagan"],["Mashina",(me.car||"")+" "+(me.plate||"")]].forEach(function(x){var r=$("div","kv");r.appendChild($("span","",x[0]));r.appendChild($("b","",x[1]||""));k0.appendChild(r)});
+  k0.appendChild($("p","note","Ma’lumotlar noto’g’ri bo’lsa, sotuvchiga ayting."));a.appendChild(k0);return}
+ var c=C[sel];
+ if(c){var e=$("div","card");e.appendChild($("h2","","Mijoz ma’lumoti: "+c.n));var f=$("form"),di=$("input"),si=$("input"),pi=$("input");
+  di.type="number";di.min=1;di.max=31;di.value=c.day;di.setAttribute("aria-label","To’lov kuni");
+  si.type="month";si.value=c.start;si.setAttribute("aria-label","Birinchi to’lov oyi");
+  pi.type="tel";pi.value=c.phone;pi.placeholder="+998 90 123 45 67";pi.setAttribute("aria-label","Telefon raqami");
+  field(f,"To’lov kuni (1-31)",di);field(f,"Birinchi to’lov oyi",si);var pw=$("div","span2");pw.appendChild($("div","note","Mijoz telefon raqami (mijoz botga shu raqam bilan kiradi)"));pw.appendChild(pi);f.appendChild(pw);
+  var b=$("button","btn","Saqlash");b.type="submit";f.appendChild(b);
+  f.onsubmit=function(ev){ev.preventDefault();var v=parseInt(di.value,10);if(!(v>=1&&v<=31)||!si.value){toast("Ma’lumotni tekshiring");return}
+   busy(b,api("PATCH","/api/customers/"+c.id,{day:v,start:si.value,phone:pi.value.trim()})).then(function(){toast("Saqlandi");return load()}).catch(function(){})};
+  e.appendChild(f);a.appendChild(e);
+  var k=$("div","card");k.appendChild($("h2","","Mijozlar"));C.forEach(function(x,ix){var r=$("button","lr"),l=$("div");l.appendChild($("b","",x.n));l.appendChild($("div","note",(x.car||"")+", "+x.plate+", har oyning "+x.day+"-kuni"));r.appendChild(l);r.appendChild($("span","",ix===sel?"tanlangan":"tanlash"));r.onclick=function(){sel=ix;render()};k.appendChild(r)});a.appendChild(k)}
+ else{var em=$("div","card");em.appendChild($("p","note","Hali mijoz yo’q. Pastdagi shakldan birinchi mijozni qo’shing."));a.appendChild(em)}
+ var n=$("div","card");n.appendChild($("h2","","Yangi mijoz"));var nf=$("form");
+ [["name","Ism familiya","text",1],["phone","Telefon raqami (mijoz shu raqam bilan kiradi)","tel",1],["plate","Davlat raqami (01A123BC)","text",1],["car","Mashina","text",1],["day","To’lov kuni (1-31)","number",1],["start","Birinchi to’lov oyi","month",1],["init","Boshlang’ich to’lov, $","number",1],["total","Nasiya summasi, $","number",1],["months","Necha oy","number",1],["paidBefore","Hozirgacha to’langan (nasiya qismi), $","number",0]].forEach(function(x){
+  var i=$("input");i.name=x[0];i.type=x[2];i.placeholder=x[1];i.setAttribute("aria-label",x[1]);i.required=!!x[3];if(x[2]==="number"){i.min=0;i.step="any"}if(x[2]==="month")i.value=iso(today()).slice(0,7);if(x[0]==="paidBefore")nf.appendChild($("p","note span2","Mijoz oldin to’lagan bo’lsa (daftardagi to’lovlar yig’indisi), shu yerga yozing. Bo’lmasa bo’sh qoldiring."));nf.appendChild(i)});
+ var s=$("button","btn","Mijozni qo’shish");s.type="submit";nf.appendChild(s);
+ nf.onsubmit=function(ev){ev.preventDefault();var g=function(q){return nf.elements[q].value};
+  var body={name:g("name"),phone:g("phone"),plate:g("plate"),car:g("car"),day:+g("day"),start:g("start"),init:+g("init"),total:+g("total"),months:+g("months")};
+  if(g("paidBefore")!=="")body.paidBefore=+g("paidBefore");
+  busy(s,api("POST","/api/customers",body)).then(function(r){toast("Mijoz qo’shildi. Mijoz botga kirib raqamini yuborsin");return load().then(function(){sel=C.findIndex(function(x){return x.id===r.customer.id});if(sel<0)sel=0;page="home";render()})}).catch(function(){})};
+ n.appendChild(nf);a.appendChild(n)}
+
+document.getElementById("file").onchange=function(e){var f=e.target.files[0],ix=+e.target.dataset.i;if(!f)return;
+ readImg(f,900,.72,function(url){var c=C[ix];api("PATCH","/api/customers/"+c.id,{photo:url}).then(function(){carVer[c.id]=Date.now();toast("Rasm saqlandi");return load()}).catch(fail)});e.target.value=""};
+
+// ---------- ekranlar ----------
+function center(a,title,text,btnText,fn){a.innerHTML="";document.getElementById("bar").hidden=true;var c=$("div","center");c.appendChild($("h1","",title));c.appendChild($("p","",text));
+ if(btnText){var b=$("button","btn",btnText);b.onclick=fn;c.appendChild(b)}a.appendChild(c)}
+function render(keep){var a=document.getElementById("app");if(!ME)return;
+ if(ME.role==="none"){center(a,"Nasiya hisobi","Ilovadan foydalanish uchun avval botga kiring va telefon raqamingizni yuboring.",ME.bot?"Botni ochish":"",function(){var u="https://t.me/"+ME.bot;if(tg&&tg.openTelegramLink)tg.openTelegramLink(u);else location.href=u});return}
+ a.innerHTML="";if(sel>=list().length)sel=0;
+ if(!list().length&&page!=="set"){
+  if(mode()==="s"){page="set"}else{center(a,"Hisob topilmadi","Sizning raqamingiz bo’yicha mijoz topilmadi. Sotuvchi raqamingizni kiritganini tekshiring, so’ng botda /start ni qayta bosing.");return}}
+ ({home:home,pay:pay,rem:rem,set:set,rep:rep})[page](a);nav();if(!keep)window.scrollTo(0,0)}
+
+function boot(){var a=document.getElementById("app");center(a,"Nasiya hisobi","Yuklanmoqda…");
+ api("GET","/api/me").then(function(me){ME=me;if(me.role==="none"){render();return}return load()}).catch(function(e){
+  if(e.status===401)center(a,"Nasiya hisobi","Ilovani Telegram ichidagi bot orqali oching.");
+  else center(a,"Ulanib bo’lmadi","Internetni tekshiring va qayta urinib ko’ring.","Qayta urinish",boot)})}
+boot();
+setInterval(function(){if(!document.hidden&&ME&&ME.role!=="none")load(true).catch(function(){})},30000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&ME&&ME.role!=="none")load(true).catch(function(){})});
+</script>
+</body>
+</html>
