@@ -277,7 +277,8 @@ async function api(req, res, url) {
 }
 
 // ---------- server ----------
-const INDEX = path.join(__dirname, "public", "index.html");
+// index.html ni "public" papkada ham, asosiy papkada ham qidiramiz
+const INDEX = [path.join(__dirname, "public", "index.html"), path.join(__dirname, "index.html")].find((f) => fs.existsSync(f)) || path.join(__dirname, "public", "index.html");
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://x");
