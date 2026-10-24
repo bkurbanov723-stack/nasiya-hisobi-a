@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nasiya hisobi</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{--bg:#efefef;--card:#fff;--ink:#111;--mute:#8d8d93;--chip:#f0f0f2;--green:#12a05c;--red:#f85455;--amb:#ffb020;--line:#e6e6ea;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
@@ -74,9 +73,16 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #0a6c
 <div class="toast" id="toast" role="status" hidden></div>
 <input type="file" accept="image/*" id="file" hidden>
 <script>
-var tg=window.Telegram&&window.Telegram.WebApp;
-if(tg){try{tg.ready();tg.expand()}catch(e){}}
-var INIT=(tg&&tg.initData)||"";
+// Telegram skripti yuklanmasa ham ilova ishlashi uchun uni bloklamaydigan qilib yuklaymiz
+var tg=null;
+(function(){var s=document.createElement("script");s.src="https://telegram.org/js/telegram-web-app.js";s.async=true;
+ s.onload=function(){tg=window.Telegram&&window.Telegram.WebApp;try{if(tg){tg.ready();tg.expand()}}catch(e){}};document.head.appendChild(s)})();
+function tgEvent(n,d){try{if(window.TelegramWebviewProxy&&window.TelegramWebviewProxy.postEvent)window.TelegramWebviewProxy.postEvent(n,JSON.stringify(d||{}));
+ else if(window.parent&&window.parent!==window)window.parent.postMessage(JSON.stringify({eventType:n,eventData:d||{}}),"*")}catch(e){}}
+function hashInit(){try{var v=new URLSearchParams(location.hash.replace(/^#/,"")).get("tgWebAppData");if(v){try{sessionStorage.setItem("tgi",v)}catch(e){}return v}}catch(e){}
+ try{return sessionStorage.getItem("tgi")||""}catch(e){return""}}
+var INIT=hashInit();
+tgEvent("web_app_ready");tgEvent("web_app_expand");
 var DEVID=new URLSearchParams(location.search).get("dev")||"";
 var MON=["yanvar","fevral","mart","aprel","may","iyun","iyul","avgust","sentabr","oktabr","noyabr","dekabr"];
 var IC={menu:"M4 7h12M4 12h16M4 17h12",bell:"M6 17V11a6 6 0 1 1 12 0v6l2 2H4zM10 21h4",pen:"M4 20l4-1 11-11-3-3L5 16zM14 7l3 3",debt:"M12 3v18M8 7h6a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h7",cal:"M4 6h16v14H4zM4 10h16M8 3v4M16 3v4",ok:"M4 12l5 5L20 6",clock:"M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 8v4l3 2",home:"M4 11l8-7 8 7v9h-5v-6H9v6H4z",wal:"M3 7h16a2 2 0 0 1 2 2v9H5a2 2 0 0 1-2-2zM3 7l12-3v3M16 13h2",gear:"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1",chart:"M4 20V10M10 20V4M16 20v-7"};
