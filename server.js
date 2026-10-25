@@ -284,6 +284,7 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, "http://x");
     res.setHeader("x-content-type-options", "nosniff");
     res.setHeader("referrer-policy", "no-referrer");
+    if (url.pathname === "/health") { res.writeHead(200, { "content-type": "text/plain" }); return res.end("ok v3"); }
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
     if (url.pathname === "/" || url.pathname === "/index.html") {
       res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" });
@@ -406,6 +407,7 @@ async function reminderTick() {
 function start() {
   server.listen(CFG.port, () => {
     console.log(`Server ishga tushdi: port ${CFG.port}${CFG.dev ? " (DEV rejim)" : ""}`);
+    console.log(`Sahifa fayli: ${INDEX} (${fs.existsSync(INDEX) ? "topildi" : "TOPILMADI"})`);
     if (!CFG.token) console.log("Diqqat: BOT_TOKEN kiritilmagan, bot va kirish ishlamaydi.");
     if (!CFG.appUrl) console.log("Diqqat: APP_URL kiritilmagan, Telegram ichida ochish tugmasi chiqmaydi.");
     if (!CFG.sellerPhones.length) console.log("Diqqat: SELLER_PHONES kiritilmagan, sotuvchi aniqlanmaydi.");

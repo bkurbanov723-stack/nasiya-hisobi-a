@@ -68,11 +68,14 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #0a6c
 </style>
 </head>
 <body>
-<div class="wrap" id="app"></div>
+<div class="wrap" id="app"><div class="center"><h1>Nasiya hisobi</h1><p>Yuklanmoqda… (v3)</p></div></div>
 <nav class="bar" id="bar" hidden></nav>
 <div class="toast" id="toast" role="status" hidden></div>
 <input type="file" accept="image/*" id="file" hidden>
 <script>
+function showErr(t){var a=document.getElementById("app");if(!a)return;var p=document.createElement("pre");p.style.cssText="white-space:pre-wrap;font-size:12px;color:#f85455;padding:12px;margin:0";p.textContent="Xato (v3): "+t;a.appendChild(p)}
+window.onerror=function(m,s,l,c){showErr(m+" ["+l+":"+c+"]")};
+window.addEventListener("unhandledrejection",function(e){showErr(String(e.reason&&e.reason.message||e.reason))});
 // Telegram skripti yuklanmasa ham ilova ishlashi uchun uni bloklamaydigan qilib yuklaymiz
 var tg=null;
 (function(){var s=document.createElement("script");s.src="https://telegram.org/js/telegram-web-app.js";s.async=true;
@@ -90,7 +93,8 @@ function ico(k,s,c){return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24
 
 // ---------- server bilan aloqa ----------
 function api(method,url,body){var h={"content-type":"application/json"};if(INIT)h["x-init-data"]=INIT;else if(DEVID)h["x-dev-user"]=DEVID;
- return fetch(url,{method:method,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){
+ var ac=window.AbortController?new AbortController():null,tm=ac?setTimeout(function(){ac.abort()},method==="GET"?25000:90000):0;
+ return fetch(url,{method:method,headers:h,body:body?JSON.stringify(body):undefined,signal:ac?ac.signal:undefined}).then(function(r){clearTimeout(tm);
   return r.json().catch(function(){return{}}).then(function(j){if(!r.ok){var e=new Error(j.error||"Xatolik yuz berdi");e.status=r.status;throw e}return j})})}
 function authQ(){return INIT?"a="+encodeURIComponent(INIT):(DEVID?"dev="+encodeURIComponent(DEVID):"")}
 var carVer={};
