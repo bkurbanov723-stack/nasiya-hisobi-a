@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS reminders(
 CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY, v TEXT);
 CREATE INDEX IF NOT EXISTS idx_pay_cust ON payments(customer_id);
 `);
+try { db.exec("ALTER TABLE reminders ADD COLUMN cust INTEGER DEFAULT 1"); } catch { /* ustun bor */ }
 const q = {
   userGet: db.prepare("SELECT * FROM users WHERE tg_id=?"),
   userUpsert: db.prepare("INSERT INTO users(tg_id,role,name,phone9,created_at) VALUES(?,?,?,?,?) ON CONFLICT(tg_id) DO UPDATE SET role=excluded.role,name=excluded.name,phone9=excluded.phone9"),
@@ -69,7 +70,12 @@ const q = {
   payInsert: db.prepare("INSERT INTO payments(customer_id,date,amount,status,kind,photo,created_at) VALUES(?,?,?,?,?,?,?)"),
   payDecide: db.prepare("UPDATE payments SET status=?,decided_at=? WHERE id=? AND status='wait'"),
   payPending: db.prepare("SELECT COUNT(*) AS n FROM payments WHERE customer_id=? AND status='wait'"),
-  remInsert: db.prepare("INSERT OR IGNORE INTO reminders(customer_id,due,kind,sent_at) VALUES(?,?,?,?)"),
+  remInsert: db.prepare("INSERT OR IGNORE INTO reminders(customer_id,due,kind,sent_at,cust) VALUES(?,?,?,?,?)"),
+  remList: db.prepare("SELECT due,kind,cust FROM reminders WHERE customer_id=?"),
+  remDelAll: db.prepare("DELETE FROM reminders WHERE customer_id=?"),
+  payDelAll: db.prepare("DELETE FROM payments WHERE customer_id=?"),
+  custDel: db.prepare("DELETE FROM customers WHERE id=?"),
+  userByPhone: db.prepare("SELECT tg_id FROM users WHERE role='customer' AND phone9=?"),
   metaGet: db.prepare("SELECT v FROM meta WHERE k=?"),
   metaSet: db.prepare("INSERT INTO meta(k,v) VALUES(?,?) ON CONFLICT(k) DO UPDATE SET v=excluded.v"),
 };
@@ -161,8 +167,11 @@ function custOut(c) {
   return {
     id: c.id, name: c.name, phone: c.phone || "", plate: c.plate || "", car: c.car || "", day: c.day, start: c.start,
     init: c.init, total: c.total, months: c.months, hasPhoto: !!c.photo, linked: !!c.tg_id, pays,
+    sent: q.remList.all(c.id).map((r) => ({ due: r.due, kind: r.kind, cust: r.cust !== 0 })),
   };
 }
+// mijoz botga oldin kirgan bo'lsa, raqam bo'yicha darhol bog'laymiz
+function relink(p9) { const u = q.userByPhone.get(p9); if (u) q.custLink.run(u.tg_id, p9, u.tg_id); }
 function todayISO() { return L.isoOfDayNum(L.todayNum()); }
 
 // ---------- API ----------
@@ -212,7 +221,7 @@ async function api(req, res, url) {
     const r = q.custInsert.run(name, ph, phone9(ph), plate, car, day, b.start, init, total, months, now);
     const id = Number(r.lastInsertRowid);
     if (before > 0) q.payInsert.run(id, todayISO(), before, "ok", "opening", null, now);
-    // mijoz allaqachon botga kirgan bo'lsa, bog'lash uchun /start ni qayta bosishi kerak
+    relink(phone9(ph)); // mijoz botga oldin kirgan bo'lsa, /start ni qayta bosish shart emas
     return send(res, 200, { customer: custOut(q.custGet.get(id)) });
   }
 
@@ -239,7 +248,17 @@ async function api(req, res, url) {
     if (b.photo !== undefined) { if (b.photo !== null && !okPhoto(b.photo)) return send(res, 400, { error: "Rasm noto'g'ri" }); f.photo = b.photo; }
     db.prepare("UPDATE customers SET name=?,phone=?,phone9=?,plate=?,car=?,day=?,start=?,init=?,total=?,months=?,photo=?,tg_id=? WHERE id=?")
       .run(f.name, f.phone, f.phone9, f.plate, f.car, f.day, f.start, f.init, f.total, f.months, f.photo, f.tg_id, c.id);
+    if (f.phone9 !== c.phone9) relink(f.phone9);
     return send(res, 200, { customer: custOut(q.custGet.get(c.id)) });
+  }
+
+  if (mm && m === "DELETE") {
+    if (!seller) return send(res, 403, { error: "Faqat sotuvchi" });
+    const c = q.custGet.get(Number(mm[1]));
+    if (!c) return send(res, 404, { error: "Topilmadi" });
+    db.exec("BEGIN");
+    try { q.payDelAll.run(c.id); q.remDelAll.run(c.id); q.custDel.run(c.id); db.exec("COMMIT"); } catch (e) { db.exec("ROLLBACK"); throw e; }
+    return send(res, 200, { ok: true });
   }
 
   if (p === "/api/payments" && m === "POST") {
@@ -277,14 +296,14 @@ async function api(req, res, url) {
 }
 
 // ---------- server ----------
-// index.html ni "public" papkada ham, asosiy papkada ham qidiramiz
-const INDEX = [path.join(__dirname, "public", "index.html"), path.join(__dirname, "index.html")].find((f) => fs.existsSync(f)) || path.join(__dirname, "public", "index.html");
+// index.html ni avval asosiy papkada, keyin "public" papkada qidiramiz
+const INDEX = [path.join(__dirname, "index.html"), path.join(__dirname, "public", "index.html")].find((f) => fs.existsSync(f)) || path.join(__dirname, "public", "index.html");
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://x");
     res.setHeader("x-content-type-options", "nosniff");
     res.setHeader("referrer-policy", "no-referrer");
-    if (url.pathname === "/health") { res.writeHead(200, { "content-type": "text/plain" }); return res.end("ok v3"); }
+    if (url.pathname === "/health") { res.writeHead(200, { "content-type": "text/plain" }); return res.end("ok v5"); }
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
     if (url.pathname === "/" || url.pathname === "/index.html") {
       res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" });
@@ -367,21 +386,27 @@ async function runReminders(todayNum) {
     if (i.left <= 0) continue;
     let kind = null, cust = "", sel = "";
     const due = L.labelOfDayNum(i.nd), car = `${c.car || "Mashina"} ${c.plate || ""}`.trim();
-    if (i.days === 10 || i.days === 5) {
-      kind = "d" + i.days;
-      cust = `Eslatma: ${car} bo'yicha nasiya to'lovingizga ${i.days} kun qoldi (${due}). To'lov: ${L.usd(i.next)}. To'lovni ilovada chek rasmi bilan kiriting.`;
-      sel = `${c.name}: to'lovga ${i.days} kun qoldi (${due}), ${L.usd(i.next)}.`;
-    } else if (i.days === 0) {
+    const d = i.days;
+    // oylik summaning faqat bir qismi qolgan bo'lsa, buni aniq yozamiz
+    const amt = i.next < i.mo - 1 ? `shu oy uchun yana ${L.usd(i.next)} (oylik ≈ ${L.usd(i.mo)})` : L.usd(i.next);
+    if (d >= 1 && d <= 10) {
+      // 10..6 kun: "d10", 5..1 kun: "d5". Server o'chib qolgan bo'lsa, keyingi kuni baribir yuboriladi (bir marta).
+      kind = d >= 6 ? "d10" : "d5";
+      cust = `Eslatma: ${car} bo'yicha nasiya to'lovingizga ${d} kun qoldi (${due}). To'lov: ${amt}. To'lovni ilovada chek rasmi bilan kiriting.`;
+      sel = `${c.name}: to'lovga ${d} kun qoldi (${due}), ${amt}.`;
+    } else if (d === 0) {
       kind = "d0";
-      cust = `Bugun nasiya to'lov kuni (${car}). To'lov: ${L.usd(i.next)}. To'lovni ilovada chek rasmi bilan kiriting.`;
-      sel = `${c.name}: bugun to'lov kuni, ${L.usd(i.next)}.`;
-    } else if (i.late && (-i.days) % 7 === 1) {
-      kind = "late" + (-i.days);
-      cust = `Diqqat: ${car} bo'yicha to'lov ${-i.days} kun kechikdi. Qarz: ${L.usd(i.owed)} (${i.lateM} oy). Iltimos, to'lovni amalga oshiring.`;
-      sel = `${c.name}: ${-i.days} kun kechikdi, qarz ${L.usd(i.owed)} (${i.lateM} oy). Tel: ${c.phone || "yo'q"}`;
+      cust = `Bugun nasiya to'lov kuni (${car}). To'lov: ${amt}. To'lovni ilovada chek rasmi bilan kiriting.`;
+      sel = `${c.name}: bugun to'lov kuni, ${amt}.`;
+    } else if (i.late && d < 0) {
+      // 1-kuni, keyin har 7 kunda (1, 8, 15, ...)
+      const k = Math.floor((-d - 1) / 7), n = 7 * k + 1;
+      kind = "late" + n;
+      cust = `Diqqat: ${car} bo'yicha to'lov ${-d} kun kechikdi. Qarz: ${L.usd(i.owed)} (${i.lateM} oy). Iltimos, to'lovni amalga oshiring.`;
+      sel = `${c.name}: ${-d} kun kechikdi, qarz ${L.usd(i.owed)} (${i.lateM} oy). Tel: ${c.phone || "yo'q"}`;
     }
     if (!kind) continue;
-    const r = q.remInsert.run(c.id, L.isoOfDayNum(i.nd), kind, new Date().toISOString());
+    const r = q.remInsert.run(c.id, L.isoOfDayNum(i.nd), kind, new Date().toISOString(), c.tg_id ? 1 : 0);
     if (!r.changes) continue; // allaqachon yuborilgan
     out.push({ customer: c.id, kind, cust, sel });
     await notify(c.tg_id, cust, true);
