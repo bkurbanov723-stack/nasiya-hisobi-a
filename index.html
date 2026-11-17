@@ -77,12 +77,12 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #0a6c
 </style>
 </head>
 <body>
-<div class="wrap" id="app"><div class="center"><h1>Nasiya hisobi</h1><p>Yuklanmoqda… (v7)</p></div></div>
+<div class="wrap" id="app"><div class="center"><h1>Nasiya hisobi</h1><p>Yuklanmoqda… (v8)</p></div></div>
 <nav class="bar" id="bar" hidden></nav>
 <div class="toast" id="toast" role="status" hidden></div>
 <input type="file" accept="image/*" id="file" hidden>
 <script>
-function showErr(t){var a=document.getElementById("app");if(!a)return;var p=document.createElement("pre");p.style.cssText="white-space:pre-wrap;font-size:12px;color:#f85455;padding:12px;margin:0";p.textContent="Xato (v7): "+t;a.appendChild(p)}
+function showErr(t){var a=document.getElementById("app");if(!a)return;var p=document.createElement("pre");p.style.cssText="white-space:pre-wrap;font-size:12px;color:#f85455;padding:12px;margin:0";p.textContent="Xato (v8): "+t;a.appendChild(p)}
 window.onerror=function(m,s,l,c){showErr(m+" ["+l+":"+c+"]")};
 window.addEventListener("unhandledrejection",function(e){showErr(String(e.reason&&e.reason.message||e.reason))});
 // Telegram skripti yuklanmasa ham ilova ishlashi uchun uni bloklamaydigan qilib yuklaymiz
@@ -400,6 +400,12 @@ function boot(){var a=document.getElementById("app");center(a,"Nasiya hisobi","Y
  api("GET","/api/me").then(function(me){ME=me;if(me.role==="none"){render();return}return load()}).catch(function(e){
   if(e.status===401)center(a,"Nasiya hisobi","Ilovani Telegram ichidagi bot orqali oching.");
   else center(a,"Ulanib bo’lmadi","Internetni tekshiring va qayta urinib ko’ring.","Qayta urinish",boot)})}
+// telefon tugmasi: kompyuterdagi Telegramda qo’ng’iroq qilib bo’lmaydi, shuning uchun raqamni nusxalab, xabar ko’rsatamiz (telefonda esa qo’ng’iroq o’zi ochiladi)
+function copyText(t){try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).catch(function(){});return true}}catch(e){}
+ try{var x=document.createElement("textarea");x.value=t;x.style.cssText="position:fixed;opacity:0";document.body.appendChild(x);x.select();var ok=document.execCommand("copy");document.body.removeChild(x);return ok}catch(e){return false}}
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href^="tel:"]');if(!a)return;
+ var n=a.getAttribute("href").slice(4),shown=fmtPhone(n.replace(/[^\d+]/g,""));copyText(n);
+ toast((/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)?"Raqam: ":"Kompyuterda qo’ng’iroq qilib bo’lmaydi. Raqam nusxalandi: ")+shown)});
 boot();
 setInterval(function(){if(!document.hidden&&ME&&ME.role!=="none")load(true).catch(function(){})},30000);
 document.addEventListener("visibilitychange",function(){if(!document.hidden&&ME&&ME.role!=="none")load(true).catch(function(){})});
