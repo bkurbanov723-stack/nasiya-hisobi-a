@@ -200,6 +200,8 @@ function saleFields(b, old) {
 }
 // mijoz botga oldin kirgan bo'lsa, raqam bo'yicha darhol bog'laymiz
 function relink(p9) { const u = q.userByPhone.get(p9); if (u) q.custLink.run(u.tg_id, p9, u.tg_id); }
+const contactAt = new Map();
+function fullPhone(s) { const d = String(s || "").replace(/\D/g, ""); return "+" + (d.length === 9 ? "998" + d : d); }
 function todayISO() { return L.isoOfDayNum(L.todayNum()); }
 
 // ---------- API ----------
@@ -265,6 +267,26 @@ async function api(req, res, url) {
     if (!q.saleGet.get(Number(cm[1]))) return send(res, 404, { error: "Topilmadi" });
     q.saleDel.run(Number(cm[1]));
     return send(res, 200, { ok: true });
+  }
+
+  // iPhone'da Telegram ichidan tel: havolasi ochilmaydi. Shuning uchun kontaktni botdan chatga yuboramiz: kontaktni bosib qo'ng'iroq qilish mumkin
+  if (p === "/api/contact" && m === "POST") {
+    const b = await readBody(req, 1e4);
+    let name, ph;
+    if (seller) {
+      const c = q.custGet.get(Number(b.customerId));
+      if (!c) return send(res, 404, { error: "Topilmadi" });
+      name = c.name; ph = fullPhone(c.phone);
+    } else {
+      if (!CFG.sellerPhones[0]) return send(res, 404, { error: "Sotuvchi raqami kiritilmagan" });
+      const sl = q.sellers.all()[0];
+      name = (sl && sl.name) || "Sotuvchi"; ph = "+998" + CFG.sellerPhones[0];
+    }
+    const last = contactAt.get(auth.tgId) || 0;
+    if (Date.now() - last < 10000) return send(res, 429, { error: "Biroz kuting" });
+    contactAt.set(auth.tgId, Date.now());
+    const r = await tg("sendContact", { chat_id: auth.tgId, phone_number: ph, first_name: name });
+    return send(res, 200, { ok: !!r.ok, phone: ph });
   }
 
   if (p === "/api/customers" && m === "GET") {
@@ -366,7 +388,7 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, "http://x");
     res.setHeader("x-content-type-options", "nosniff");
     res.setHeader("referrer-policy", "no-referrer");
-    if (url.pathname === "/health") { res.writeHead(200, { "content-type": "text/plain" }); return res.end("ok v7"); }
+    if (url.pathname === "/health") { res.writeHead(200, { "content-type": "text/plain" }); return res.end("ok v9"); }
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
     if (url.pathname === "/" || url.pathname === "/index.html") {
       res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" });

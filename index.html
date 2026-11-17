@@ -77,12 +77,12 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #0a6c
 </style>
 </head>
 <body>
-<div class="wrap" id="app"><div class="center"><h1>Nasiya hisobi</h1><p>Yuklanmoqda… (v8)</p></div></div>
+<div class="wrap" id="app"><div class="center"><h1>Nasiya hisobi</h1><p>Yuklanmoqda… (v9)</p></div></div>
 <nav class="bar" id="bar" hidden></nav>
 <div class="toast" id="toast" role="status" hidden></div>
 <input type="file" accept="image/*" id="file" hidden>
 <script>
-function showErr(t){var a=document.getElementById("app");if(!a)return;var p=document.createElement("pre");p.style.cssText="white-space:pre-wrap;font-size:12px;color:#f85455;padding:12px;margin:0";p.textContent="Xato (v8): "+t;a.appendChild(p)}
+function showErr(t){var a=document.getElementById("app");if(!a)return;var p=document.createElement("pre");p.style.cssText="white-space:pre-wrap;font-size:12px;color:#f85455;padding:12px;margin:0";p.textContent="Xato (v9): "+t;a.appendChild(p)}
 window.onerror=function(m,s,l,c){showErr(m+" ["+l+":"+c+"]")};
 window.addEventListener("unhandledrejection",function(e){showErr(String(e.reason&&e.reason.message||e.reason))});
 // Telegram skripti yuklanmasa ham ilova ishlashi uchun uni bloklamaydigan qilib yuklaymiz
@@ -196,7 +196,7 @@ function home(a){var c=list()[sel],i=info(c);topbar(a,c,i);
  g.appendChild(tile("","debt","Oylik to’lov",money(i.mo),"taxminan, "+c.months+" oy"));
  g.appendChild(tile("","ok","Boshlang’ich",money(c.init),"alohida to’langan"));
  a.appendChild(g);
- if(mode()==="s"&&c.phone){var cl=$("a","btn call","Mijozga qo’ng’iroq: "+c.phone);cl.href="tel:"+c.phone.replace(/[^\d+]/g,"");a.appendChild(cl)}}
+ if(mode()==="s"&&c.phone){var cl=$("a","btn call","Mijozga qo’ng’iroq: "+c.phone);cl.href="tel:"+c.phone.replace(/[^\d+]/g,"");cl.dataset.cid=c.id;a.appendChild(cl)}}
 
 // ---------- to'lovlar ----------
 function statusChip(p){var s=$("span","st"),v=p[2];if(v==="wait"){s.className+=" w";s.textContent="Tekshiruvda"}else if(v==="no"){s.className+=" r";s.textContent="Rad etildi"}else{s.className+=" g";s.textContent="Tasdiqlangan"}return s}
@@ -244,7 +244,7 @@ function rcard(a,c){var x=c.pays[rcp],paid=0;for(var k=0;k<=rcp;k++)if(okp(c.pay
  b2.onclick=function(){rcp=null;render()};r.appendChild(b1);r.appendChild(b2);w.appendChild(r);a.appendChild(w)}
 
 // ---------- hisobot ----------
-function callBtn(c){if(c.phone){var l=$("a","sm","Qo’ng’iroq");l.href="tel:"+c.phone.replace(/[^\d+]/g,"");return l}return $("span","note","Raqam yo’q")}
+function callBtn(c){if(c.phone){var l=$("a","sm","Qo’ng’iroq");l.href="tel:"+c.phone.replace(/[^\d+]/g,"");l.dataset.cid=c.id;return l}return $("span","note","Raqam yo’q")}
 function rep(a){a.appendChild($("h1","","Hisobot"));var tot=0,paid=0,mon=0,soon=[],lates=[],pends=[];
  C.forEach(function(c){var i=info(c);tot+=i.left;paid+=i.paid;if(i.left>0){mon+=Math.min(i.mo,i.left);if(i.late)lates.push([c,i]);else if(i.days<=10)soon.push([c,i])}if(i.pend)pends.push([c,i])});
  var k=$("div","card"),m=$("div","mini");
@@ -404,8 +404,13 @@ function boot(){var a=document.getElementById("app");center(a,"Nasiya hisobi","Y
 function copyText(t){try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).catch(function(){});return true}}catch(e){}
  try{var x=document.createElement("textarea");x.value=t;x.style.cssText="position:fixed;opacity:0";document.body.appendChild(x);x.select();var ok=document.execCommand("copy");document.body.removeChild(x);return ok}catch(e){return false}}
 document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href^="tel:"]');if(!a)return;
- var n=a.getAttribute("href").slice(4),shown=fmtPhone(n.replace(/[^\d+]/g,""));copyText(n);
- toast((/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)?"Raqam: ":"Kompyuterda qo’ng’iroq qilib bo’lmaydi. Raqam nusxalandi: ")+shown)});
+ var n=a.getAttribute("href").slice(4),shown=fmtPhone(n.replace(/[^\d+]/g,"")),ios=/iPhone|iPad|iPod/i.test(navigator.userAgent),mob=ios||/Android/i.test(navigator.userAgent);copyText(n);
+ // iPhone: Telegram ichida qo’ng’iroq ochilmaydi. Kontaktni botdan chatga yuboramiz, uni bosib qo’ng’iroq qilinadi
+ if(ios&&(a.dataset.cid||mode()==="m")){e.preventDefault();
+  api("POST","/api/contact",a.dataset.cid?{customerId:+a.dataset.cid}:{}).then(function(r){
+   if(r.ok){toast("Kontakt chatga yuborildi. Chatda kontaktni bosib, qo’ng’iroq qiling");setTimeout(function(){tgEvent("web_app_close")},1800)}
+   else toast("Raqam nusxalandi: "+shown+". Telefon tugmalariga qo’yib qo’ng’iroq qiling")}).catch(function(){toast("Raqam nusxalandi: "+shown)});return}
+ toast((mob?"Raqam: ":"Kompyuterda qo’ng’iroq qilib bo’lmaydi. Raqam nusxalandi: ")+shown)});
 boot();
 setInterval(function(){if(!document.hidden&&ME&&ME.role!=="none")load(true).catch(function(){})},30000);
 document.addEventListener("visibilitychange",function(){if(!document.hidden&&ME&&ME.role!=="none")load(true).catch(function(){})});
