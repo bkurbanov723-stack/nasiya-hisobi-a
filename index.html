@@ -20,21 +20,21 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.3 system-ui,-app
 .rolebadge{border-radius:999px;padding:10px 14px;font-weight:700;font-size:14px;background:var(--green);color:#fff;flex:none}.rolebadge.m{background:#0a6cff}
 .rail{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;scrollbar-width:none}
 .rail::-webkit-scrollbar{display:none}
-.photo{flex:0 0 100%;scroll-snap-align:center;height:320px;border-radius:36px;position:relative;overflow:hidden;background:linear-gradient(160deg,#d8dce2,#b9c0ca) center/cover no-repeat}
-.photo .cs{position:absolute;inset:0;display:grid;place-items:center;padding:40px 20px 70px}.photo .cs svg{width:100%}
+.photo{flex:0 0 100%;scroll-snap-align:center;height:240px;border-radius:36px;position:relative;overflow:hidden;background:linear-gradient(160deg,#d8dce2,#b9c0ca) center/cover no-repeat}
+.photo .cs{position:absolute;inset:0;display:grid;place-items:center;padding:30px 20px 60px}.photo .cs svg{width:100%}
 .brand{position:absolute;top:14px;left:14px;background:rgba(240,240,242,.92);color:#222;border-radius:18px;padding:14px 16px;font-weight:700}
 .pen{position:absolute;top:14px;right:14px;width:54px;height:54px;border-radius:50%;border:0;background:#fff;color:#111;display:grid;place-items:center;cursor:pointer}
-.plate{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;border:3px solid #111;border-radius:10px;background:#fff;color:#111;font-weight:700;font-size:26px;line-height:1;white-space:nowrap}
+.plate{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;border:3px solid #111;border-radius:10px;background:#fff;color:#111;font-weight:700;font-size:24px;line-height:1;white-space:nowrap}
 .plate b{padding:8px 12px;border-right:3px solid #111}.plate span{padding:8px 10px;display:flex;align-items:center;gap:6px}
 .flag{width:16px;height:12px;background:linear-gradient(#1eb5e9 33%,#fff 33% 66%,#1db954 66%);border:1px solid #bbb}
-.dots{display:flex;justify-content:center;gap:12px;margin:14px 0 18px}.dots i{width:22px;height:22px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--mute)}
+.dots{display:flex;justify-content:center;gap:12px;margin:8px 0 10px}.dots i{width:22px;height:22px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--mute)}
 .dots i{transform:scale(.45)}.dots i.on{transform:scale(.55)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tile{background:var(--card);border-radius:30px;padding:20px;min-height:230px;display:flex;flex-direction:column;justify-content:space-between;border:0;text-align:left;font:inherit;color:inherit;width:100%}
-.tile.full{grid-column:1/-1;min-height:0;gap:10px}
-.tile .lb{display:flex;align-items:center;gap:10px;color:var(--mute);font-weight:600;font-size:17px}
-.tile .lb svg{flex:none}
-.tile b{font-size:27px;line-height:1.1;display:block}.tile span.s{color:var(--mute);font-size:18px;display:block;margin-top:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{background:var(--card);border-radius:20px;padding:11px 13px;min-height:0;display:flex;flex-direction:column;justify-content:space-between;gap:6px;border:0;text-align:left;font:inherit;color:inherit;width:100%}
+.tile.full{grid-column:1/-1;min-height:0}
+.tile .lb{display:flex;align-items:center;gap:7px;color:var(--mute);font-weight:600;font-size:13px}
+.tile .lb svg{flex:none;width:18px;height:18px}
+.tile b{font-size:19px;line-height:1.15;display:block}.tile span.s{color:var(--mute);font-size:12.5px;display:block;margin-top:2px}
 .tile.red{background:var(--red);color:#fff}.tile.red .lb,.tile.red span.s{color:#fff}
 .tile.amb{background:var(--amb);color:#1a1200}.tile.amb .lb,.tile.amb span.s{color:#4a3500}
 .card{background:var(--card);border-radius:28px;padding:18px;margin-bottom:12px}
@@ -61,6 +61,12 @@ input,select{padding:13px;border:1.5px solid var(--line);border-radius:14px;back
 .st{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}.st.w{background:#fff1d1;color:#8a5a00}.st.g{background:#dff4e8;color:#177a45}.st.r{background:#fde1de;color:#b3261e}
 .mp{display:flex;gap:8px}.mp select{flex:1;min-width:0}
 .call{display:block;text-align:center;text-decoration:none;margin-top:12px}
+.back{border:0;background:none;color:var(--green);font:inherit;font-weight:700;padding:6px 2px;margin:0 0 2px;cursor:pointer}
+.sc{padding:0;overflow:hidden}.sc .ph{height:200px;background:linear-gradient(160deg,#d8dce2,#b9c0ca) center/cover no-repeat;position:relative;display:grid;place-items:center}.sc .ph svg{width:70%}
+.sc .bd{padding:14px 16px 16px}.sc .tt{font-size:19px;font-weight:700}.sc .pr{font-size:24px;font-weight:800;margin:4px 0 2px}
+.sc .sold{position:absolute;top:12px;left:12px}.sc .ph .st{font-size:13px}
+.btn.alt{background:var(--chip);color:var(--ink)}
+a.btn{display:block;text-align:center;text-decoration:none}
 .dng{color:var(--red);margin-top:14px}.dz{margin-top:6px}
 .pic{display:block;width:100%;max-height:320px;object-fit:contain;border-radius:16px;background:var(--chip);margin:8px 0}
 .thumb{width:40px;height:40px;object-fit:cover;border-radius:10px;flex:none}
@@ -71,12 +77,12 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #0a6c
 </style>
 </head>
 <body>
-<div class="wrap" id="app"><div class="center"><h1>Nasiya hisobi</h1><p>Yuklanmoqda… (v5)</p></div></div>
+<div class="wrap" id="app"><div class="center"><h1>Nasiya hisobi</h1><p>Yuklanmoqda… (v7)</p></div></div>
 <nav class="bar" id="bar" hidden></nav>
 <div class="toast" id="toast" role="status" hidden></div>
 <input type="file" accept="image/*" id="file" hidden>
 <script>
-function showErr(t){var a=document.getElementById("app");if(!a)return;var p=document.createElement("pre");p.style.cssText="white-space:pre-wrap;font-size:12px;color:#f85455;padding:12px;margin:0";p.textContent="Xato (v5): "+t;a.appendChild(p)}
+function showErr(t){var a=document.getElementById("app");if(!a)return;var p=document.createElement("pre");p.style.cssText="white-space:pre-wrap;font-size:12px;color:#f85455;padding:12px;margin:0";p.textContent="Xato (v7): "+t;a.appendChild(p)}
 window.onerror=function(m,s,l,c){showErr(m+" ["+l+":"+c+"]")};
 window.addEventListener("unhandledrejection",function(e){showErr(String(e.reason&&e.reason.message||e.reason))});
 // Telegram skripti yuklanmasa ham ilova ishlashi uchun uni bloklamaydigan qilib yuklaymiz
@@ -91,7 +97,7 @@ var INIT=hashInit();
 tgEvent("web_app_ready");tgEvent("web_app_expand");
 var DEVID=new URLSearchParams(location.search).get("dev")||"";
 var MON=["yanvar","fevral","mart","aprel","may","iyun","iyul","avgust","sentabr","oktabr","noyabr","dekabr"];
-var IC={menu:"M4 7h12M4 12h16M4 17h12",bell:"M6 17V11a6 6 0 1 1 12 0v6l2 2H4zM10 21h4",pen:"M4 20l4-1 11-11-3-3L5 16zM14 7l3 3",debt:"M12 3v18M8 7h6a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h7",cal:"M4 6h16v14H4zM4 10h16M8 3v4M16 3v4",ok:"M4 12l5 5L20 6",clock:"M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 8v4l3 2",home:"M4 11l8-7 8 7v9h-5v-6H9v6H4z",wal:"M3 7h16a2 2 0 0 1 2 2v9H5a2 2 0 0 1-2-2zM3 7l12-3v3M16 13h2",gear:"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1",chart:"M4 20V10M10 20V4M16 20v-7"};
+var IC={menu:"M4 7h12M4 12h16M4 17h12",bell:"M6 17V11a6 6 0 1 1 12 0v6l2 2H4zM10 21h4",pen:"M4 20l4-1 11-11-3-3L5 16zM14 7l3 3",debt:"M12 3v18M8 7h6a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h7",cal:"M4 6h16v14H4zM4 10h16M8 3v4M16 3v4",ok:"M4 12l5 5L20 6",clock:"M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 8v4l3 2",home:"M4 11l8-7 8 7v9h-5v-6H9v6H4z",wal:"M3 7h16a2 2 0 0 1 2 2v9H5a2 2 0 0 1-2-2zM3 7l12-3v3M16 13h2",gear:"M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1",chart:"M4 20V10M10 20V4M16 20v-7",car:"M3 15l1.6-5A2 2 0 0 1 6.5 8.6h11a2 2 0 0 1 1.9 1.4L21 15v3h-2.5v-1.5h-13V18H3zM6.5 12.5h.01M17.5 12.5h.01",phone:"M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"};
 function ico(k,s,c){return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="'+(c||"currentColor")+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+IC[k]+'"/></svg>'}
 
 // ---------- server bilan aloqa ----------
@@ -104,14 +110,15 @@ var carVer={};
 function photoUrl(kind,id){return "/api/photo/"+kind+"/"+id+"?"+authQ()+(kind==="car"?"&v="+(carVer[id]||0):"")}
 
 // ---------- holat ----------
-var ME=null,C=[],page="home",sel=0,rcp=null,sig="";
+var ME=null,C=[],CARS=[],CRAW=[],page="home",sel=0,rcp=null,sig="",cedit=null;
 function mode(){return ME&&ME.role==="seller"?"s":"m"}
 function list(){return C}
 function lbl(iso){var p=iso.split("-");return parseInt(p[2],10)+"."+p[1]+"."+p[0].slice(2)}
 function mapC(c){return{id:c.id,n:c.name,phone:c.phone,plate:c.plate,car:c.car,day:c.day,start:c.start,init:c.init,total:c.total,months:c.months,linked:!!c.linked,sent:c.sent||[],
  photo:c.hasPhoto?photoUrl("car",c.id):"",pays:c.pays.map(function(p){return[lbl(p.date),p.amount,p.status,p.hasPhoto?photoUrl("pay",p.id):null,p.id,p.kind]})}}
-function load(silent){return api("GET","/api/customers").then(function(r){var s=JSON.stringify(r.customers);
- if(silent&&s===sig)return;sig=s;C=r.customers.map(mapC);if(sel>=C.length)sel=0;
+function mapCar(c){return{id:c.id,title:c.title,year:c.year,price:c.price,init:c.init,months:c.months,note:c.note,sold:!!c.sold,photo:c.hasPhoto?"/api/photo/sale/"+c.id+"?"+authQ()+"&v="+encodeURIComponent(c.v||""):""}}
+function load(silent){return Promise.all([api("GET","/api/customers"),api("GET","/api/cars").catch(function(){return{cars:CRAW}})]).then(function(rs){var r=rs[0];CRAW=rs[1].cars||[];var s=JSON.stringify([r.customers,CRAW]);
+ if(silent&&s===sig)return;sig=s;C=r.customers.map(mapC);CARS=CRAW.map(mapCar);if(sel>=C.length)sel=0;
  if(silent){var ae=document.activeElement;if(ae&&(ae.tagName==="INPUT"))return}render(silent)})}
 
 // ---------- yordamchilar ----------
@@ -141,14 +148,18 @@ function readImg(f,max,q,cb){var im=new Image(),u=URL.createObjectURL(f);im.onlo
 function plate(p){var m=p.match(/^(\d{2})(.*)$/),r=(m?m[2]:p).replace(/(\d+)/," $1 ").replace(/\s+/g," ").trim(),w=$("div","plate");
  w.appendChild($("b","",m?m[1]:""));var s=$("span","",r);s.appendChild($("i","flag"));w.appendChild(s);return w}
 var CAR='<svg viewBox="0 0 300 110" aria-hidden="true"><path d="M14 96C22 74 62 66 96 56C124 30 192 28 218 52C248 58 278 68 288 96Z" fill="#eceef1"/><path d="M60 92C80 70 110 64 140 70M160 52C180 60 214 66 250 90M100 60C120 74 150 76 176 62" fill="none" stroke="#d3d7dd" stroke-width="3" stroke-linecap="round"/></svg>';
-function remCount(){return list().filter(function(c){var i=info(c);return i.left>0&&(i.late||i.days<=10)}).length}
+var SEEN={};try{SEEN=JSON.parse(localStorage.getItem("nasiya_seen")||"{}")||{}}catch(e){SEEN={}}
+// har bir mijozning hozirgi eslatma bosqichi: 10 kun, 5 kun, bugun yoki kechikish (har 7 kunda yangi)
+function remKey(c){var i=info(c);if(i.left<=0||!(i.late||i.days<=10))return null;return iso(i.nd)+"|"+(i.late?"l"+Math.floor((-i.days-1)/7):i.days===0?"d0":i.days<=5?"d5":"d10")}
+function remCount(){return list().filter(function(c){var k=remKey(c);return k&&SEEN[c.id]!==k}).length}
+function markSeen(){list().forEach(function(c){var k=remKey(c);if(k)SEEN[c.id]=k});try{localStorage.setItem("nasiya_seen",JSON.stringify(SEEN))}catch(e){}}
 function pendCount(){return list().reduce(function(n,c){return n+info(c).pend},0)}
 
 // ---------- pastki menyu ----------
 function nav(){var b=document.getElementById("bar");b.hidden=false;b.innerHTML="";
- [["home","Bosh sahifa","home"],["pay","To’lovlar","wal"],["rem","Eslatma","bell"]].concat(mode()==="s"?[["rep","Hisobot","chart"]]:[]).concat([["set",mode()==="s"?"Sozlamalar":"Men","gear"]]).forEach(function(x){
+ [["home","Bosh sahifa","home"],["pay","To’lovlar","wal"],["cars","Mashinalar","car"]].concat(mode()==="s"?[["rep","Hisobot","chart"]]:[]).concat([["set",mode()==="s"?"Sozlamalar":"Men","gear"]]).forEach(function(x){
   var k=$("button");k.setAttribute("aria-pressed",page===x[0]);k.innerHTML=ico(x[2],26)+"<span>"+x[1]+"</span>";
-  if((x[0]==="rem"&&remCount())||(x[0]==="pay"&&mode()==="s"&&pendCount()))k.appendChild($("i","rd"));k.onclick=function(){page=x[0];rcp=null;render()};b.appendChild(k)})}
+  if(x[0]==="pay"&&mode()==="s"&&pendCount())k.appendChild($("i","rd"));k.onclick=function(){page=x[0];rcp=null;cedit=null;render()};b.appendChild(k)})}
 
 // ---------- bosh sahifa ----------
 function topbar(a,c,i){var t=$("div","top");
@@ -158,7 +169,7 @@ function topbar(a,c,i){var t=$("div","top");
  var b=$("button","circ");b.setAttribute("aria-label","Eslatmalar");b.innerHTML=ico("bell",26);if(remCount())b.appendChild($("i","dot"));b.onclick=function(){page="rem";render()};
  var rb=$("div","rolebadge"+(mode()==="m"?" m":""),mode()==="s"?"Sotuvchi":"Mijoz");
  t.appendChild(p);t.appendChild(rb);t.appendChild(b);a.appendChild(t)}
-function tile(cls,ic,lb,big,sub){var t=$("div","tile "+cls),l=$("div","lb");l.innerHTML=ico(ic,26);l.appendChild($("span","",lb));t.appendChild(l);
+function tile(cls,ic,lb,big,sub){var t=$("div","tile "+cls),l=$("div","lb");l.innerHTML=ico(ic,18);l.appendChild($("span","",lb));t.appendChild(l);
  var d=$("div");d.appendChild($("b","",big));d.appendChild($("span","s",sub));t.appendChild(d);return t}
 function home(a){var c=list()[sel],i=info(c);topbar(a,c,i);
  var rail=$("div","rail");
@@ -189,7 +200,7 @@ function home(a){var c=list()[sel],i=info(c);topbar(a,c,i);
 
 // ---------- to'lovlar ----------
 function statusChip(p){var s=$("span","st"),v=p[2];if(v==="wait"){s.className+=" w";s.textContent="Tekshiruvda"}else if(v==="no"){s.className+=" r";s.textContent="Rad etildi"}else{s.className+=" g";s.textContent="Tasdiqlangan"}return s}
-function picker(a){var s=$("div","seg");list().forEach(function(c,k){var b=$("button","",((c.n||"").trim().split(/\s+/)[0]||"Mijoz")+" "+(c.plate||"").slice(-4));b.setAttribute("aria-pressed",k===sel);b.onclick=function(){sel=k;render()};s.appendChild(b)});a.appendChild(s)}
+function picker(a){var s=$("div","seg");list().forEach(function(c,k){var b=$("button","",((c.n||"").trim().split(/\s+/)[0]||"Mijoz")+" "+(c.plate||""));b.setAttribute("aria-pressed",k===sel);b.onclick=function(){sel=k;render()};s.appendChild(b)});a.appendChild(s)}
 function pay(a){var c=list()[sel],i=info(c);a.appendChild($("h1","","To’lovlar"));if(list().length>1)picker(a);
  if(rcp!==null&&c.pays[rcp]&&okp(c.pays[rcp])&&c.pays[rcp][5]!=="opening")rcard(a,c);
  if(mode()==="s"){var w=c.pays.map(function(p,ix){return[p,ix]}).filter(function(y){return y[0][2]==="wait"});
@@ -248,8 +259,8 @@ function rep(a){a.appendChild($("h1","","Hisobot"));var tot=0,paid=0,mon=0,soon=
 
 // ---------- eslatma ----------
 function remRow(k,lab,sub,cls,txt){var r=$("div","kv"),l=$("div");l.appendChild($("b","",lab));l.appendChild($("div","note",sub));r.appendChild(l);r.appendChild($("span","st "+cls,txt));k.appendChild(r)}
-function rem(a){var c=list()[sel],i=info(c);a.appendChild($("h1","","Eslatmalar"));if(list().length>1)picker(a);
- var k=$("div","card");k.appendChild($("h2","",c.n));
+function rem(a){markSeen();var c=list()[sel],i=info(c);var bk=$("button","back","← Bosh sahifa");bk.onclick=function(){page="home";render()};a.appendChild(bk);a.appendChild($("h1","","Eslatmalar"));if(list().length>1)picker(a);
+ var k=$("div","card");k.appendChild($("h2","",c.n));k.appendChild($("p","note",(c.car||"")+" "+(c.plate||"")));
  if(mode()==="s"){var bl=$("div","kv");bl.appendChild($("span","","Telegram bot"));bl.appendChild($("span","st "+(c.linked?"g":"r"),c.linked?"Ulangan":"Ulanmagan"));k.appendChild(bl);
   if(!c.linked)k.appendChild($("p","note","Mijoz hali botga kirmagan, shuning uchun eslatma unga bormaydi (sizga boradi). Mijoz @"+(ME.bot||"bot")+" ga kirib, /start bosib, raqamini yuborsin."))}
  if(i.left<=0){k.appendChild($("p","note","Qarz yopilgan, eslatma kerak emas."));a.appendChild(k);return}
@@ -264,6 +275,59 @@ function rem(a){var c=list()[sel],i=info(c);a.appendChild($("h1","","Eslatmalar"
  if(i.late){var kk=Math.floor((-d-1)/7),ls=(c.sent||[]).filter(function(x){return x.due===due&&x.kind.indexOf("late")===0}).length;
   remRow(k,"Kechikish eslatmasi","1-kuni, keyin har 7 kunda",sent("late"+(7*kk+1))?"g":"w",sent("late"+(7*kk+1))?"Yuborilgan: "+ls+" ta":"Bugun yuboriladi")}
  k.appendChild($("p","note","Eslatma Telegram orqali ham mijozga, ham sotuvchiga boradi. Eslatmalar har kuni ertalab yuboriladi."));a.appendChild(k)}
+
+// ---------- sotuvchi bilan bog'lanish ----------
+function fmtPhone(p){var d=String(p||"").replace(/\D/g,"");return d.length===12?"+"+d.slice(0,3)+" "+d.slice(3,5)+" "+d.slice(5,8)+" "+d.slice(8,10)+" "+d.slice(10):p}
+function contactBtns(parent){var sp=ME&&ME.sellerPhone;if(!sp)return false;var r=$("div","row2");
+ var c1=$("a","btn","Qo’ng’iroq qilish");c1.href="tel:"+sp;
+ var c2=$("a","btn alt","Telegram");c2.href="https://t.me/"+sp;c2.target="_blank";c2.rel="noopener";
+ c2.onclick=function(e){if(tg&&tg.openTelegramLink){e.preventDefault();try{tg.openTelegramLink("https://t.me/"+sp)}catch(x){window.open(c2.href,"_blank")}}};
+ r.appendChild(c1);r.appendChild(c2);parent.appendChild(r);return true}
+function sellerCard(title){var k=$("div","card");k.appendChild($("h2","",title));var sp=ME&&ME.sellerPhone;
+ if(!sp){k.appendChild($("p","note","Sotuvchi raqami hozircha kiritilmagan."));return k}
+ var r=$("div","kv");r.appendChild($("span","","Telefon"));r.appendChild($("b","",fmtPhone(sp)));k.appendChild(r);contactBtns(k);return k}
+
+// ---------- sotuvdagi mashinalar ----------
+function carMeta(c){var t=[];if(c.year)t.push(c.year+"-yil");if(c.init!=null)t.push("boshlang’ich "+money(c.init));if(c.months)t.push(c.months+" oyga");
+ var s=t.join(" · ");if(c.init!=null&&c.months&&c.price>c.init)s+=(s?" · ":"")+"oyiga ≈ "+money((c.price-c.init)/c.months);return s}
+function carForm(f,c){var FD=[["title","Mashina nomi","text","Chevrolet Spark"],["year","Ishlab chiqarilgan yili (ixtiyoriy)","number","2019"],["price","Narxi, $","number","7800"],["init","Boshlang’ich to’lov, $ (ixtiyoriy)","number","2000"],["months","Necha oyga nasiya (ixtiyoriy)","number","18"],["note","Qisqacha ma’lumot (ixtiyoriy)","text","Yurgani, holati, rangi"]];
+ FD.forEach(function(x){var el=$("input");el.name=x[0];el.type=x[2];el.placeholder=x[3];el.setAttribute("aria-label",x[1]);
+  if(x[2]==="number"){el.min=0;el.step="any";el.setAttribute("inputmode","decimal")}
+  if(c){var v=x[0]==="note"?c.note:c[x[0]];if(v!==null&&v!==undefined)el.value=v}field(f,x[1],el)});
+ var ph=$("input");ph.type="file";ph.accept="image/*";ph.name="photo";ph.setAttribute("aria-label","Mashina rasmi");field(f,c&&c.photo?"Rasmni almashtirish (ixtiyoriy)":"Mashina rasmi (ixtiyoriy)",ph);
+ return function(cb){var g=function(q){return f.elements[q].value.trim()},bad=function(q,t){toast(t);try{f.elements[q].focus()}catch(e){}};
+  if(!g("title")){bad("title","Mashina nomini kiriting");return}
+  if(!(+g("price")>0)){bad("price","Narxni kiriting");return}
+  if(g("year")!==""&&!(+g("year")>=1980&&+g("year")<=2100&&+g("year")%1===0)){bad("year","Yilni to’g’ri kiriting, masalan 2019");return}
+  if(g("init")!==""&&+g("init")>+g("price")){bad("init","Boshlang’ich to’lov narxdan oshmasin");return}
+  if(g("months")!==""&&!(+g("months")>=1&&+g("months")%1===0)){bad("months","Oylar soni butun son bo’lsin");return}
+  var body={title:g("title"),year:g("year"),price:+g("price"),init:g("init"),months:g("months"),note:g("note")};
+  if(ph.files[0])readImg(ph.files[0],1000,.72,function(u){body.photo=u;cb(body)});else cb(body)}}
+function carFormCard(c){var e=$("div","card");e.appendChild($("h2","",c?"Mashinani tahrirlash":"Yangi mashina"));var f=$("form");f.noValidate=true;f.style.gridTemplateColumns="1fr";
+ var get=carForm(f,c),b=$("button","btn",c?"Saqlash":"Sotuvga qo’yish");b.type="submit";f.appendChild(b);
+ if(c){var cn=$("button","btn alt","Bekor qilish");cn.type="button";cn.onclick=function(){cedit=null;render(true)};f.appendChild(cn)}
+ f.onsubmit=function(ev){ev.preventDefault();get(function(body){busy(b,api(c?"PATCH":"POST",c?"/api/cars/"+c.id:"/api/cars",body)).then(function(){toast(c?"Saqlandi":"Mashina qo’shildi");cedit=null;return load()}).catch(function(){})})};
+ e.appendChild(f);return e}
+function carCard(c){var k=$("div","card sc"),ph=$("div","ph");if(c.photo)ph.style.backgroundImage="url("+c.photo+")";else ph.innerHTML=CAR;
+ if(c.sold){var sd=$("span","st r sold","Sotilgan");ph.appendChild(sd)}k.appendChild(ph);
+ var bd=$("div","bd");bd.appendChild($("div","tt",c.title));bd.appendChild($("div","pr",money(c.price)));var mt=carMeta(c);if(mt)bd.appendChild($("div","note",mt));
+ if(c.note)bd.appendChild($("p","",c.note));
+ if(mode()==="s"){var r=$("div","row2"),ed=$("button","btn alt","Tahrirlash"),sl=$("button","btn alt",c.sold?"Qayta sotuvga":"Sotildi");
+  ed.onclick=function(){cedit=c.id;render(true)};
+  sl.onclick=function(){busy(sl,api("PATCH","/api/cars/"+c.id,{sold:!c.sold})).then(function(){toast(c.sold?"Sotuvga qaytarildi":"Sotildi deb belgilandi");return load()}).catch(function(){})};
+  r.appendChild(ed);r.appendChild(sl);bd.appendChild(r);
+  var dz=$("div","dz"),db=$("button","sm dng","O’chirish");
+  db.onclick=function(){dz.innerHTML="";dz.appendChild($("p","note","Mashina e’lonini o’chirasizmi? Qaytarib bo’lmaydi."));var rr=$("div","row2"),y=$("button","btn no","Ha, o’chirish"),n=$("button","btn alt","Bekor qilish");
+   y.onclick=function(){busy(y,api("DELETE","/api/cars/"+c.id)).then(function(){toast("O’chirildi");return load()}).catch(function(){})};n.onclick=function(){render(true)};rr.appendChild(y);rr.appendChild(n);dz.appendChild(rr)};
+  dz.appendChild(db);bd.appendChild(dz)}
+ else contactBtns(bd);
+ k.appendChild(bd);return k}
+function cars(a){a.appendChild($("h1","","Mashinalar"));
+ if(mode()==="s"&&cedit===null){var nb=$("button","btn","+ Yangi mashina qo’shish");nb.style.marginBottom="12px";nb.style.width="100%";nb.onclick=function(){cedit=0;render(true)};a.appendChild(nb)}
+ if(mode()==="s"&&cedit===0)a.appendChild(carFormCard(null));
+ if(!CARS.length&&cedit!==0){var em=$("div","card");em.appendChild($("p","note",mode()==="s"?"Hali sotuvga mashina qo’yilmagan. Yuqoridagi tugma orqali qo’shing.":"Hozircha sotuvda mashina yo’q."));a.appendChild(em)}
+ CARS.forEach(function(c){a.appendChild(mode()==="s"&&cedit===c.id?carFormCard(c):carCard(c))});
+ if(mode()!=="s"&&CARS.length){a.appendChild($("p","note","Mashina haqida so’rash uchun sotuvchiga qo’ng’iroq qiling yoki Telegramda yozing."))}}
 
 // ---------- sozlamalar ----------
 function field(f,label,inp){var w=$("div");w.appendChild($("div","note",label));w.appendChild(inp);f.appendChild(w)}
@@ -295,7 +359,7 @@ function custForm(f,c,withPaid){
   if(withPaid&&g("paidBefore")!=="")body.paidBefore=+g("paidBefore");return body}}
 function set(a){a.appendChild($("h1","",mode()==="s"?"Sozlamalar":"Men"));
  if(mode()!=="s"){var me=C[sel]||{},k0=$("div","card");[["Ism",me.n],["Telefon",me.phone||"kiritilmagan"],["Mashina",(me.car||"")+" "+(me.plate||"")]].forEach(function(x){var r=$("div","kv");r.appendChild($("span","",x[0]));r.appendChild($("b","",x[1]||""));k0.appendChild(r)});
-  k0.appendChild($("p","note","Ma’lumotlar noto’g’ri bo’lsa, sotuvchiga ayting."));a.appendChild(k0);return}
+  k0.appendChild($("p","note","Ma’lumotlar noto’g’ri bo’lsa, sotuvchiga ayting."));a.appendChild(k0);a.appendChild(sellerCard("Sotuvchi bilan bog’lanish"));return}
  var c=C[sel];
  if(c){var e=$("div","card");e.appendChild($("h2","","Mijozni tahrirlash: "+c.n));var f=$("form");f.noValidate=true;f.style.gridTemplateColumns="1fr";var getE=custForm(f,c,false);
   var nt=$("p","note span2","Summa yoki muddat o’zgarsa, hisob yangi ma’lumot bo’yicha qayta hisoblanadi. Telefon o’zgarsa, mijoz botga yangi raqam bilan qayta kirishi kerak.");f.appendChild(nt);
@@ -328,9 +392,9 @@ function center(a,title,text,btnText,fn){a.innerHTML="";document.getElementById(
 function render(keep){var a=document.getElementById("app");if(!ME)return;
  if(ME.role==="none"){center(a,"Nasiya hisobi","Ilovadan foydalanish uchun avval botga kiring va telefon raqamingizni yuboring.",ME.bot?"Botni ochish":"",function(){var u="https://t.me/"+ME.bot;if(tg&&tg.openTelegramLink)tg.openTelegramLink(u);else location.href=u});return}
  a.innerHTML="";if(sel>=list().length)sel=0;
- if(!list().length&&page!=="set"){
+ if(!list().length&&page!=="set"&&!(page==="cars"&&mode()==="s")){
   if(mode()==="s"){page="set"}else{center(a,"Hisob topilmadi","Sizning raqamingiz bo’yicha mijoz topilmadi. Sotuvchi raqamingizni kiritganini tekshiring, so’ng botda /start ni qayta bosing.");return}}
- ({home:home,pay:pay,rem:rem,set:set,rep:rep})[page](a);nav();if(!keep)window.scrollTo(0,0)}
+ ({home:home,pay:pay,rem:rem,set:set,rep:rep,cars:cars})[page](a);nav();if(!keep)window.scrollTo(0,0)}
 
 function boot(){var a=document.getElementById("app");center(a,"Nasiya hisobi","Yuklanmoqda…");
  api("GET","/api/me").then(function(me){ME=me;if(me.role==="none"){render();return}return load()}).catch(function(e){

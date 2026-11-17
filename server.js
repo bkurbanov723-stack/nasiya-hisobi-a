@@ -52,6 +52,9 @@ CREATE TABLE IF NOT EXISTS payments(
 CREATE TABLE IF NOT EXISTS reminders(
   customer_id INTEGER, due TEXT, kind TEXT, sent_at TEXT, PRIMARY KEY(customer_id, due, kind));
 CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY, v TEXT);
+CREATE TABLE IF NOT EXISTS sale_cars(
+  id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, year INTEGER, price REAL NOT NULL,
+  init REAL, months INTEGER, note TEXT, photo TEXT, sold INTEGER DEFAULT 0, created_at TEXT, updated_at TEXT);
 CREATE INDEX IF NOT EXISTS idx_pay_cust ON payments(customer_id);
 `);
 try { db.exec("ALTER TABLE reminders ADD COLUMN cust INTEGER DEFAULT 1"); } catch { /* ustun bor */ }
@@ -76,6 +79,11 @@ const q = {
   payDelAll: db.prepare("DELETE FROM payments WHERE customer_id=?"),
   custDel: db.prepare("DELETE FROM customers WHERE id=?"),
   userByPhone: db.prepare("SELECT tg_id FROM users WHERE role='customer' AND phone9=?"),
+  saleList: db.prepare("SELECT id,title,year,price,init,months,note,sold,(photo IS NOT NULL) AS has_photo,updated_at FROM sale_cars ORDER BY sold, id DESC"),
+  saleGet: db.prepare("SELECT * FROM sale_cars WHERE id=?"),
+  saleInsert: db.prepare("INSERT INTO sale_cars(title,year,price,init,months,note,photo,sold,created_at,updated_at) VALUES(?,?,?,?,?,?,?,0,?,?)"),
+  saleUpdate: db.prepare("UPDATE sale_cars SET title=?,year=?,price=?,init=?,months=?,note=?,photo=?,sold=?,updated_at=? WHERE id=?"),
+  saleDel: db.prepare("DELETE FROM sale_cars WHERE id=?"),
   metaGet: db.prepare("SELECT v FROM meta WHERE k=?"),
   metaSet: db.prepare("INSERT INTO meta(k,v) VALUES(?,?) ON CONFLICT(k) DO UPDATE SET v=excluded.v"),
 };
@@ -170,6 +178,26 @@ function custOut(c) {
     sent: q.remList.all(c.id).map((r) => ({ due: r.due, kind: r.kind, cust: r.cust !== 0 })),
   };
 }
+function saleOut(c) {
+  return { id: c.id, title: c.title, year: c.year || null, price: c.price, init: c.init == null ? null : c.init, months: c.months || null, note: c.note || "", sold: !!c.sold, hasPhoto: !!c.has_photo, v: c.updated_at || "" };
+}
+// sotuvdagi mashina ma'lumotini tekshirish. old: tahrirlashda mavjud qator. Xato bo'lsa { error } qaytaradi
+function saleFields(b, old) {
+  const f = old ? { title: old.title, year: old.year, price: old.price, init: old.init, months: old.months, note: old.note, photo: old.photo, sold: old.sold } : { title: "", year: null, price: null, init: null, months: null, note: "", photo: null, sold: 0 };
+  const bad = (t) => ({ error: t });
+  if (b.title !== undefined) { f.title = str(b.title, 60); if (!f.title) return bad("Mashina nomini kiriting"); }
+  if (b.year !== undefined) { if (b.year === "" || b.year === null) f.year = null; else { const y = num(b.year, 1980, 2100); if (y === null || !Number.isInteger(y)) return bad("Yil noto'g'ri"); f.year = y; } }
+  if (b.price !== undefined) { const v = num(b.price, 1, 1e7); if (v === null) return bad("Narx noto'g'ri"); f.price = v; }
+  if (b.init !== undefined) { if (b.init === "" || b.init === null) f.init = null; else { const v = num(b.init, 0, 1e7); if (v === null) return bad("Boshlang'ich to'lov noto'g'ri"); f.init = v; } }
+  if (b.months !== undefined) { if (b.months === "" || b.months === null) f.months = null; else { const v = num(b.months, 1, 120); if (v === null || !Number.isInteger(v)) return bad("Muddat noto'g'ri"); f.months = v; } }
+  if (b.note !== undefined) f.note = str(b.note, 600);
+  if (b.photo !== undefined) { if (b.photo !== null && !okPhoto(b.photo)) return bad("Rasm noto'g'ri"); f.photo = b.photo; }
+  if (b.sold !== undefined) f.sold = b.sold ? 1 : 0;
+  if (!f.title) return bad("Mashina nomini kiriting");
+  if (f.price === null) return bad("Narxni kiriting");
+  if (f.init !== null && f.init > f.price) return bad("Boshlang'ich to'lov narxdan oshmasin");
+  return f;
+}
 // mijoz botga oldin kirgan bo'lsa, raqam bo'yicha darhol bog'laymiz
 function relink(p9) { const u = q.userByPhone.get(p9); if (u) q.custLink.run(u.tg_id, p9, u.tg_id); }
 function todayISO() { return L.isoOfDayNum(L.todayNum()); }
@@ -183,18 +211,21 @@ async function api(req, res, url) {
   if (!auth) return send(res, 401, { error: "Telegram orqali kiring" });
   const me = roleOf(auth);
 
-  if (p === "/api/me" && m === "GET") return send(res, 200, { role: me.role, name: me.name, bot: process.env.BOT_USERNAME || "" });
+  if (p === "/api/me" && m === "GET") return send(res, 200, { role: me.role, name: me.name, bot: process.env.BOT_USERNAME || "", sellerPhone: CFG.sellerPhones[0] ? "+998" + CFG.sellerPhones[0] : "" });
   if (me.role === "none") return send(res, 403, { error: "Avval botda telefon raqamingizni yuboring" });
   const seller = me.role === "seller";
 
   // rasmlar (img tegi uchun, ?a= bilan)
-  let mm = /^\/api\/photo\/(pay|car)\/(\d+)$/.exec(p);
+  let mm = /^\/api\/photo\/(pay|car|sale)\/(\d+)$/.exec(p);
   if (mm && m === "GET") {
     let data = null;
     if (mm[1] === "pay") {
       const pay = q.payGet.get(Number(mm[2]));
       const c = pay && q.custGet.get(pay.customer_id);
       if (pay && c && (seller || c.tg_id === auth.tgId)) data = pay.photo;
+    } else if (mm[1] === "sale") {
+      const sc = q.saleGet.get(Number(mm[2]));
+      if (sc && (seller || !sc.sold)) data = sc.photo;
     } else {
       const c = q.custGet.get(Number(mm[2]));
       if (c && (seller || c.tg_id === auth.tgId)) data = c.photo;
@@ -202,6 +233,38 @@ async function api(req, res, url) {
     if (!data) { res.writeHead(404); return res.end(); }
     res.writeHead(200, { "content-type": "image/jpeg", "cache-control": mm[1] === "pay" ? "private, max-age=86400" : "private, max-age=300" });
     return res.end(Buffer.from(data.split(",")[1], "base64"));
+  }
+
+  // sotuvdagi mashinalar: ko'rish hamma uchun, boshqarish faqat sotuvchiga
+  if (p === "/api/cars" && m === "GET") {
+    const rows = q.saleList.all().filter((c) => seller || !c.sold);
+    return send(res, 200, { cars: rows.map(saleOut) });
+  }
+  if (p === "/api/cars" && m === "POST") {
+    if (!seller) return send(res, 403, { error: "Faqat sotuvchi" });
+    const f = saleFields(await readBody(req, 6e6), null);
+    if (f.error) return send(res, 400, { error: f.error });
+    const now = new Date().toISOString();
+    const r = q.saleInsert.run(f.title, f.year, f.price, f.init, f.months, f.note, f.photo, now, now);
+    const n = q.saleGet.get(Number(r.lastInsertRowid));
+    return send(res, 200, { car: saleOut({ ...n, has_photo: n.photo ? 1 : 0 }) });
+  }
+  const cm = /^\/api\/cars\/(\d+)$/.exec(p);
+  if (cm && m === "PATCH") {
+    if (!seller) return send(res, 403, { error: "Faqat sotuvchi" });
+    const old = q.saleGet.get(Number(cm[1]));
+    if (!old) return send(res, 404, { error: "Topilmadi" });
+    const f = saleFields(await readBody(req, 6e6), old);
+    if (f.error) return send(res, 400, { error: f.error });
+    q.saleUpdate.run(f.title, f.year, f.price, f.init, f.months, f.note, f.photo, f.sold, new Date().toISOString(), old.id);
+    const n = q.saleGet.get(old.id);
+    return send(res, 200, { car: saleOut({ ...n, has_photo: n.photo ? 1 : 0 }) });
+  }
+  if (cm && m === "DELETE") {
+    if (!seller) return send(res, 403, { error: "Faqat sotuvchi" });
+    if (!q.saleGet.get(Number(cm[1]))) return send(res, 404, { error: "Topilmadi" });
+    q.saleDel.run(Number(cm[1]));
+    return send(res, 200, { ok: true });
   }
 
   if (p === "/api/customers" && m === "GET") {
@@ -303,7 +366,7 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, "http://x");
     res.setHeader("x-content-type-options", "nosniff");
     res.setHeader("referrer-policy", "no-referrer");
-    if (url.pathname === "/health") { res.writeHead(200, { "content-type": "text/plain" }); return res.end("ok v5"); }
+    if (url.pathname === "/health") { res.writeHead(200, { "content-type": "text/plain" }); return res.end("ok v7"); }
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
     if (url.pathname === "/" || url.pathname === "/index.html") {
       res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache" });
